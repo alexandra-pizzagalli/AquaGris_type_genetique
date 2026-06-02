@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaGRIS – Primary Farm Type</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <style>
+    body { background:#f0f4f7; font-family:'Segoe UI',Arial,sans-serif; font-size:0.93rem; }
+    .fao-header {
+      background: linear-gradient(135deg,#1a6b8a 0%,#0d4a63 100%);
+      color:white; padding:16px 28px; margin-bottom:22px;
+      border-radius:0 0 14px 14px;
+      display:flex; align-items:center; gap:16px;
+      box-shadow:0 4px 18px rgba(0,0,0,0.15);
+    }
+    .fao-title   { font-size:1.35rem; font-weight:700; line-height:1.2; }
+    .fao-subtitle{ font-size:0.8rem; opacity:0.82; margin-top:2px; }
+    .card-section {
+      background:white; border-radius:10px; padding:20px 26px;
+      margin-bottom:18px; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+      border-left: 4px solid transparent;
+      transition: border-left-color .2s;
+    }
+    .card-section:focus-within { border-left-color:#1a6b8a; }
+    .section-title {
+      color:#1a6b8a; font-weight:700; font-size:1rem;
+      border-bottom:2px solid #e0ecf3; padding-bottom:8px;
+      margin-bottom:14px; display:flex; align-items:center; gap:6px;
+    }
+    .subsection {
+      background:#f5fafc; border-left:3px solid #1a6b8a;
+      padding:14px 16px; border-radius:0 8px 8px 0; margin-bottom:14px;
+    }
+    .subsection-title { font-weight:600; color:#1a6b8a; margin-bottom:10px; font-size:0.9rem; }
+    .form-label { font-weight:500; color:#333; margin-bottom:3px; }
+    .help-icon  { color:#1a6b8a; font-size:0.8rem; margin-left:3px; cursor:help; vertical-align:super; }
+    .required   { color:#dc3545; margin-left:2px; }
+    hr.subtle   { border-color:#e8ecef; margin:14px 0; }
+    .btn-export {
+      background:#1a6b8a; color:white !important; border:none;
+      padding:9px 24px; border-radius:8px; font-weight:600;
+      font-size:0.9rem; cursor:pointer; transition:background .2s;
+    }
+    .btn-export:hover { background:#0d4a63; }
+    .progress-wrap { margin-bottom:20px; }
+    .progress-label { font-size:0.82rem; color:#555; margin-bottom:4px; font-weight:500; }
+    .progress { height:8px !important; border-radius:4px; }
+    .progress-bar { background:#1a6b8a !important; }
+    .nav-tabs .nav-link { color:#555; font-weight:500; }
+    .nav-tabs .nav-link.active { color:#1a6b8a; font-weight:700; border-bottom:3px solid #1a6b8a; }
+    @media(max-width:768px){
+      .card-section { padding:14px 14px; }
+      .fao-header   { padding:12px 14px; }
+    }
+    /* Summary table */
+    .recap-section-title {
+      font-weight:700; font-size:1rem; color:#1a6b8a;
+      border-bottom:2px solid #e0ecf3; padding-bottom:6px; margin-bottom:10px;
+    }
+    .recap-table { width:100%; border-collapse:collapse; margin-bottom:18px; }
+    .recap-table td { padding:5px 10px 5px 0; vertical-align:top; }
+    .recap-table td:first-child { font-weight:600; color:#1a6b8a; width:45%; }
+    .recap-empty { color:#aaa; font-style:italic; }
+
+    /* Save banner */
+    #save-banner {
+      display:none; position:fixed; bottom:18px; right:18px;
+      background:#1a6b8a; color:white;
+      padding:8px 18px; border-radius:8px; font-size:0.88rem; font-weight:600;
+      box-shadow:0 3px 12px rgba(0,0,0,0.18); z-index:9999;
+      transition: opacity .3s;
+    }
+    #restore-notice {
+      display:none; background:#e8f4f8; border:1px solid #a8d4e8;
+      border-radius:8px; padding:10px 16px; margin-bottom:16px;
+      font-size:0.88rem; color:#1a6b8a; font-weight:500;
+    }
+  </style>
+</head>
+<body>
+
+<!-- FAO Header -->
+<div class="fao-header">
+  <div>
+    <div class="fao-title">AquaGRIS – Primary Farm Type</div>
+    <div class="fao-subtitle">Food and Agriculture Organization of the United Nations &nbsp;|&nbsp; <span style="opacity:.7">Aquatic Genetic Resources Information System</span></div>
+  </div>
+</div>
+
+<div class="container-fluid" style="max-width:1100px;">
+
+  <!-- Restore notice -->
+  <div id="restore-notice">
+    ✅ Your previous data has been restored automatically. You can continue filling in the form where you left off.
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap">
+    <div class="progress-label" id="progress-label">Form completion: 0%</div>
+    <div class="progress">
+      <div class="progress-bar" id="prog_bar" role="progressbar" style="width:0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-3" id="mainTabs">
+    <li class="nav-item"><a class="nav-link active" href="#tab1" data-bs-toggle="tab">🧬 Primary Farm Type</a></li>
+    <li class="nav-item"><a class="nav-link" href="#tab2" data-bs-toggle="tab">📄 Summary</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- ═══════════════════════════════════════ TAB 1 ═══════════════════════════════════════ -->
+    <div class="tab-pane fade show active" id="tab1">
+
+      <!-- Person providing the information -->
+      <div class="card-section">
+        <div class="section-title">🌍 Person providing the information</div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label" for="contact">SURNAME Name</label>
+            <input type="text" class="form-control" id="contact" name="contact">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email">
+          </div>
+        </div>
+      </div>
+
+      <!-- Species -->
+      <div class="card-section">
+        <div class="section-title">🔬 Species</div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label" for="groupe_taxo">Taxonomic group</label>
+            <select class="form-select" id="groupe_taxo" name="groupe_taxo">
+              <option value="">(none)</option>
+              <option>Algae and aquatic plants</option>
+              <option>Crustaceans</option>
+              <option>Freshwater and euryhaline fish</option>
+              <option>Marine fish</option>
+              <option>Molluscs</option>
+              <option>Other aquatic animals</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="nom_espece">Species name</label>
+            <select class="form-select" id="nom_espece" name="nom_espece">
+              <option value="">(none)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Farm type identification -->
+      <div class="card-section">
+        <div class="section-title">🏷️ Farm type identification</div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="nom_type">Name of the farm type <span class="required">*</span></label>
+            <input type="text" class="form-control" id="nom_type" name="nom_type">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="desc_type">Description</label>
+            <textarea class="form-control" id="desc_type" name="desc_type" rows="3" placeholder="Provide a brief description of this farm type including its main characteristics"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label class="form-label" for="nom_rapporteur">Name of person reporting information (if different from national focal point)</label>
+            <input type="text" class="form-control" id="nom_rapporteur" name="nom_rapporteur">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="type_primaire">Primary farm type <span class="required">*</span></label>
+            <select class="form-select" id="type_primaire" name="type_primaire">
+              <option value="">(none)</option>
+              <option value="Wild sourced">Wild sourced</option>
+              <option value="Captive propagated">Captive propagated</option>
+              <option value="Strain">Strain</option>
+              <option value="Variety">Variety</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── WILD SOURCED ── -->
+      <div class="card-section" id="section-wild" style="display:none">
+        <div class="section-title">🌊 Wild Sourced – Details</div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="ws_stade_vie">What stage of the life cycle is it collected?</label>
+            <select class="form-select" id="ws_stade_vie" name="ws_stade_vie">
+              <option value="">(none)</option>
+              <option>Eggs</option><option>Larvae</option><option>Juveniles</option>
+              <option>Broodstock</option><option>Adults</option><option>Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="ws_lieu_broodstock">Where and when is it collected?</label>
+            <textarea class="form-control" id="ws_lieu_broodstock" name="ws_lieu_broodstock" rows="3" placeholder="Location, season, year…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="ws_stock_identifie">Is the wild sourced farm type derived from a known and identified genetic stock?</label>
+            <select class="form-select" id="ws_stock_identifie" name="ws_stock_identifie">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="ws_ref_stock_wrap" style="display:none">
+            <label class="form-label" for="ws_ref_stock">Stock reference <span class="help-icon" title="Name, location or publication describing the genetic stock">ⓘ</span></label>
+            <textarea class="form-control" id="ws_ref_stock" name="ws_ref_stock" rows="3" placeholder="e.g. River Loire population, FAO stock code…"></textarea>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="ws_raison_commerciale">What is the principal rationale for commercial production of this farm type?</label>
+          <textarea class="form-control" id="ws_raison_commerciale" name="ws_raison_commerciale" rows="3" placeholder="e.g. Local adaptation, disease resistance…"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="ws_sources">Sources <span class="help-icon" title="Documentary references">ⓘ</span></label>
+          <textarea class="form-control" id="ws_sources" name="ws_sources" rows="2" placeholder="URLs, publications, official documents…"></textarea>
+        </div>
+        <hr class="subtle">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label" for="ws_export_type">Has this farm type been exported out of your country for aquaculture use?</label>
+            <select class="form-select" id="ws_export_type" name="ws_export_type">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-8" id="ws_details_export_wrap" style="display:none">
+            <label class="form-label" for="ws_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea class="form-control" id="ws_details_export" name="ws_details_export" rows="3" placeholder="e.g. Spain (2018–2022), Portugal (2020)…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CAPTIVE PROPAGATED ── -->
+      <div class="card-section" id="section-captive" style="display:none">
+        <div class="section-title">🐟 Captive Propagated – Details</div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_origine">What is the origin of this farmed type?</label>
+            <select class="form-select" id="cp_origine" name="cp_origine">
+              <option value="">(none)</option>
+              <option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="cp_origine_details">Details</label>
+            <textarea class="form-control" id="cp_origine_details" name="cp_origine_details" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_composition">What is the species composition?</label>
+            <select class="form-select" id="cp_composition" name="cp_composition">
+              <option value="">(none)</option><option>Pure species</option><option>Introgressed</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="cp_nb_generations">How many generations has it been maintained in captivity?</label>
+            <input type="number" class="form-control" id="cp_nb_generations" name="cp_nb_generations" min="0" step="1">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_risques">Do risks associated with this farm type differ from those of the species as a whole?</label>
+            <select class="form-select" id="cp_risques" name="cp_risques">
+              <option value="">(none)</option>
+              <option value="same">Same risk</option><option value="higher">Higher risk</option>
+              <option value="lower">Lower risk</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="cp_raison_commerciale">What is the principal rationale for commercial production?</label>
+            <textarea class="form-control" id="cp_raison_commerciale" name="cp_raison_commerciale" rows="3" placeholder="e.g. Fast growth, disease resistance…"></textarea>
+          </div>
+        </div>
+        <div class="subsection mb-3">
+          <div class="subsection-title">What selective breeding techniques were used?</div>
+          <div id="cp_methodes_amelio_group">
+            <div class="form-check form-check-inline" id="cp_meth_mass_selection_wrap"><input class="form-check-input" type="checkbox" id="cp_meth_mass_selection" name="cp_methodes_amelio" value="Mass selection"><label class="form-check-label" for="cp_meth_mass_selection">Mass selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_family_selection" name="cp_methodes_amelio" value="Family selection"><label class="form-check-label" for="cp_meth_family_selection">Family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_within_family" name="cp_methodes_amelio" value="Within family selection"><label class="form-check-label" for="cp_meth_within_family">Within family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_combined" name="cp_methodes_amelio" value="Combined selection"><label class="form-check-label" for="cp_meth_combined">Combined selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_marker" name="cp_methodes_amelio" value="Marker assisted selection"><label class="form-check-label" for="cp_meth_marker">Marker assisted selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_genomic" name="cp_methodes_amelio" value="Genomic selection"><label class="form-check-label" for="cp_meth_genomic">Genomic selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_meth_not_known" name="cp_methodes_amelio" value="Not known"><label class="form-check-label" for="cp_meth_not_known">Not known</label></div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_historique_doc">Does it have a documented breeding history? <span class="help-icon" title="Archives, publications, internal reports">ⓘ</span></label>
+            <select class="form-select" id="cp_historique_doc" name="cp_historique_doc">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="cp_ref_historique_wrap" style="display:none">
+            <label class="form-label" for="cp_ref_historique">Reference details</label>
+            <textarea class="form-control" id="cp_ref_historique" name="cp_ref_historique" rows="3" placeholder="Author, year, title, link…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_ne_estimable">Can effective population size (Ne) be estimated? <span class="help-icon" title="Via pedigree or genomic data">ⓘ</span></label>
+            <select class="form-select" id="cp_ne_estimable" name="cp_ne_estimable">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="cp_ne_valeur_wrap" style="display:none">
+            <label class="form-label" for="cp_ne_valeur">What is the effective population size of this farm type?</label>
+            <input type="number" class="form-control" id="cp_ne_valeur" name="cp_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="cp_registre_national">Is it recognized in a national registry of farm types?</label>
+            <select class="form-select" id="cp_registre_national" name="cp_registre_national">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="cp_registre_details_wrap" style="display:none">
+            <label class="form-label" for="cp_registre_details">Details</label>
+            <textarea class="form-control" id="cp_registre_details" name="cp_registre_details" rows="2" placeholder="Registration number, organisation…"></textarea>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="cp_sources">Sources <span class="help-icon" title="Documentary references">ⓘ</span></label>
+          <textarea class="form-control" id="cp_sources" name="cp_sources" rows="2" placeholder="URLs, publications, official documents…"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Is this farm type subject to any conservation measure?</label>
+          <div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_cons_insitu" name="cp_mesures_conservation" value="In situ conservation"><label class="form-check-label" for="cp_cons_insitu">In situ conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_cons_exsitu_vivo" name="cp_mesures_conservation" value="Ex situ in vivo conservation"><label class="form-check-label" for="cp_cons_exsitu_vivo">Ex situ in vivo conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_cons_exsitu_vitro" name="cp_mesures_conservation" value="Ex situ in vitro conservation"><label class="form-check-label" for="cp_cons_exsitu_vitro">Ex situ in vitro conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="cp_cons_none" name="cp_mesures_conservation" value="None"><label class="form-check-label" for="cp_cons_none">None</label></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="cp_details_conservation">Details <span class="help-icon" title="Location, responsible organisation…">ⓘ</span></label>
+          <textarea class="form-control" id="cp_details_conservation" name="cp_details_conservation" rows="2" placeholder="Describe the measures in place…"></textarea>
+        </div>
+        <hr class="subtle">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label" for="cp_export_type">Has this farm type been exported out of your country for aquaculture use?</label>
+            <select class="form-select" id="cp_export_type" name="cp_export_type">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-8" id="cp_details_export_wrap" style="display:none">
+            <label class="form-label" for="cp_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea class="form-control" id="cp_details_export" name="cp_details_export" rows="3" placeholder="e.g. Spain (2018–2022), Portugal (2020)…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STRAIN ── -->
+      <div class="card-section" id="section-strain" style="display:none">
+        <div class="section-title">🧬 Strain – Details</div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_origine">What is the origin of this farm type?</label>
+            <select class="form-select" id="st_origine" name="st_origine">
+              <option value="">(none)</option><option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="st_origine_details">Details</label>
+            <textarea class="form-control" id="st_origine_details" name="st_origine_details" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_risques">Do risks associated with this farm type differ from those of the species as a whole?</label>
+            <select class="form-select" id="st_risques" name="st_risques">
+              <option value="">(none)</option>
+              <option value="same">Same risk</option><option value="higher">Higher risk</option>
+              <option value="lower">Lower risk</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="st_raison_commerciale">What is the principal rationale for commercial production?</label>
+            <textarea class="form-control" id="st_raison_commerciale" name="st_raison_commerciale" rows="3" placeholder="e.g. Fast growth, disease resistance…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_composition">What is the species composition?</label>
+            <select class="form-select" id="st_composition" name="st_composition">
+              <option value="">(none)</option><option>Pure species</option><option>Introgressed</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="st_become">How has it become a strain?</label>
+            <select class="form-select" id="st_become" name="st_become">
+              <option value="">(none)</option><option>Domestication selection</option><option>Selective breeding</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_nb_generations">How many generations has it been domesticated/selected?</label>
+            <input type="number" class="form-control" id="st_nb_generations" name="st_nb_generations" min="0" step="1">
+          </div>
+        </div>
+        <div class="subsection mb-3">
+          <div class="subsection-title">What selective breeding techniques were used?</div>
+          <div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_mass" name="st_methodes_amelio" value="Mass selection"><label class="form-check-label" for="st_meth_mass">Mass selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_family" name="st_methodes_amelio" value="Family selection"><label class="form-check-label" for="st_meth_family">Family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_within" name="st_methodes_amelio" value="Within family selection"><label class="form-check-label" for="st_meth_within">Within family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_combined" name="st_methodes_amelio" value="Combined selection"><label class="form-check-label" for="st_meth_combined">Combined selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_marker" name="st_methodes_amelio" value="Marker assisted selection"><label class="form-check-label" for="st_meth_marker">Marker assisted selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_genomic" name="st_methodes_amelio" value="Genomic selection"><label class="form-check-label" for="st_meth_genomic">Genomic selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_meth_not_known" name="st_methodes_amelio" value="Not known"><label class="form-check-label" for="st_meth_not_known">Not known</label></div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_historique_doc">Does it have a documented breeding history? <span class="help-icon" title="Archives, publications, internal reports">ⓘ</span></label>
+            <select class="form-select" id="st_historique_doc" name="st_historique_doc">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="st_ref_historique_wrap" style="display:none">
+            <label class="form-label" for="st_ref_historique">Reference details</label>
+            <textarea class="form-control" id="st_ref_historique" name="st_ref_historique" rows="3" placeholder="Author, year, title, link…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_ne_estimable">Can effective population size (Ne) be estimated? <span class="help-icon" title="Via pedigree or genomic data">ⓘ</span></label>
+            <select class="form-select" id="st_ne_estimable" name="st_ne_estimable">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="st_ne_valeur_wrap" style="display:none">
+            <label class="form-label" for="st_ne_valeur">What is the effective population size of this farm type?</label>
+            <input type="number" class="form-control" id="st_ne_valeur" name="st_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_registre_national">Is it recognized in a national registry of farm types?</label>
+            <select class="form-select" id="st_registre_national" name="st_registre_national">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="st_code_accession_wrap" style="display:none">
+            <label class="form-label" for="st_code_accession">What is the strain accession code in the national registry?</label>
+            <input type="text" class="form-control" id="st_code_accession" name="st_code_accession">
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="st_registre_details">Details</label>
+          <textarea class="form-control" id="st_registre_details" name="st_registre_details" rows="2" placeholder="Registration number, organisation…"></textarea>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="st_has_heritable_char">Does it have heritable distinguishing characteristics?</label>
+            <select class="form-select" id="st_has_heritable_char" name="st_has_heritable_char">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+        </div>
+        <div id="st_heritable_wrap" style="display:none">
+          <div class="subsection mb-2">
+            <div class="subsection-title">Genetic characteristics</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_gen_snp" name="st_caract_genetiques" value="SNP panel"><label class="form-check-label" for="st_gen_snp">SNP panel</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_gen_mt" name="st_caract_genetiques" value="mtDNA"><label class="form-check-label" for="st_gen_mt">mtDNA</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_gen_micro" name="st_caract_genetiques" value="Microsatellites"><label class="form-check-label" for="st_gen_micro">Microsatellites</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_gen_wgs" name="st_caract_genetiques" value="Whole genome sequencing"><label class="form-check-label" for="st_gen_wgs">Whole genome sequencing</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_gen_nk" name="st_caract_genetiques" value="Not known"><label class="form-check-label" for="st_gen_nk">Not known</label></div>
+          </div>
+          <div class="subsection mb-2">
+            <div class="subsection-title">Qualitative phenotype</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pq_colour" name="st_phenotype_qualitatif" value="Colour"><label class="form-check-label" for="st_pq_colour">Colour</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pq_scale" name="st_phenotype_qualitatif" value="Scale pattern"><label class="form-check-label" for="st_pq_scale">Scale pattern</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pq_meristic" name="st_phenotype_qualitatif" value="Meristic characteristics"><label class="form-check-label" for="st_pq_meristic">Meristic characteristics</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pq_other" name="st_phenotype_qualitatif" value="Other"><label class="form-check-label" for="st_pq_other">Other</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pq_nk" name="st_phenotype_qualitatif" value="Not known"><label class="form-check-label" for="st_pq_nk">Not known</label></div>
+          </div>
+          <div class="subsection mb-2">
+            <div class="subsection-title">Quantitative performance characteristics</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pqt_prod" name="st_phenotype_quantitatif" value="Production performance"><label class="form-check-label" for="st_pqt_prod">Production performance</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pqt_carc" name="st_phenotype_quantitatif" value="Carcass composition"><label class="form-check-label" for="st_pqt_carc">Carcass composition</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pqt_flesh" name="st_phenotype_quantitatif" value="Flesh quality"><label class="form-check-label" for="st_pqt_flesh">Flesh quality</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pqt_fitness" name="st_phenotype_quantitatif" value="Fitness"><label class="form-check-label" for="st_pqt_fitness">Fitness</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_pqt_nk" name="st_phenotype_quantitatif" value="Not known"><label class="form-check-label" for="st_pqt_nk">Not known</label></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="st_desc_char_distinctives">Describe distinguishing characteristics</label>
+            <textarea class="form-control" id="st_desc_char_distinctives" name="st_desc_char_distinctives" rows="3" placeholder="Describe the distinguishing characteristics…"></textarea>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="st_sources">Sources <span class="help-icon" title="Documentary references">ⓘ</span></label>
+          <textarea class="form-control" id="st_sources" name="st_sources" rows="2" placeholder="URLs, publications, official documents…"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Is this farm type subject to any conservation measure?</label>
+          <div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_cons_insitu" name="st_mesures_conservation" value="In situ conservation"><label class="form-check-label" for="st_cons_insitu">In situ conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_cons_exsitu_vivo" name="st_mesures_conservation" value="Ex situ in vivo conservation"><label class="form-check-label" for="st_cons_exsitu_vivo">Ex situ in vivo conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_cons_exsitu_vitro" name="st_mesures_conservation" value="Ex situ in vitro conservation"><label class="form-check-label" for="st_cons_exsitu_vitro">Ex situ in vitro conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="st_cons_none" name="st_mesures_conservation" value="None"><label class="form-check-label" for="st_cons_none">None</label></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="st_details_conservation">Details <span class="help-icon" title="Location, responsible organisation…">ⓘ</span></label>
+          <textarea class="form-control" id="st_details_conservation" name="st_details_conservation" rows="2" placeholder="Describe the measures in place…"></textarea>
+        </div>
+        <hr class="subtle">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label" for="st_export_type">Has this farm type been exported out of your country for aquaculture use?</label>
+            <select class="form-select" id="st_export_type" name="st_export_type">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-8" id="st_details_export_wrap" style="display:none">
+            <label class="form-label" for="st_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea class="form-control" id="st_details_export" name="st_details_export" rows="3" placeholder="e.g. Spain (2018–2022), Portugal (2020)…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VARIETY ── -->
+      <div class="card-section" id="section-variety" style="display:none">
+        <div class="section-title">🌱 Variety – Details</div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_origine">What is the origin of this farm type?</label>
+            <select class="form-select" id="va_origine" name="va_origine">
+              <option value="">(none)</option><option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_origine_details">Details</label>
+            <textarea class="form-control" id="va_origine_details" name="va_origine_details" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_risques">Do risks associated with this farm type differ from those of the species as a whole?</label>
+            <select class="form-select" id="va_risques" name="va_risques">
+              <option value="">(none)</option>
+              <option value="same">Same risk</option><option value="higher">Higher risk</option>
+              <option value="lower">Lower risk</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_raison_commerciale">What is the principal rationale for commercial production?</label>
+            <textarea class="form-control" id="va_raison_commerciale" name="va_raison_commerciale" rows="3" placeholder="e.g. Fast growth, disease resistance…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_composition">What is the species composition?</label>
+            <select class="form-select" id="va_composition" name="va_composition">
+              <option value="">(none)</option><option>Pure species</option><option>Introgressed</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_become">How has it become a variety?</label>
+            <select class="form-select" id="va_become" name="va_become">
+              <option value="">(none)</option><option>Domestication selection</option><option>Selective breeding</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_nb_generations">How many generations has it been domesticated/selected?</label>
+            <input type="number" class="form-control" id="va_nb_generations" name="va_nb_generations" min="0" step="1">
+          </div>
+        </div>
+        <div class="subsection mb-3">
+          <div class="subsection-title">What selective breeding techniques were used?</div>
+          <div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_mass" name="va_methodes_amelio" value="Mass selection"><label class="form-check-label" for="va_meth_mass">Mass selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_family" name="va_methodes_amelio" value="Family selection"><label class="form-check-label" for="va_meth_family">Family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_within" name="va_methodes_amelio" value="Within family selection"><label class="form-check-label" for="va_meth_within">Within family selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_combined" name="va_methodes_amelio" value="Combined selection"><label class="form-check-label" for="va_meth_combined">Combined selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_marker" name="va_methodes_amelio" value="Marker assisted selection"><label class="form-check-label" for="va_meth_marker">Marker assisted selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_genomic" name="va_methodes_amelio" value="Genomic selection"><label class="form-check-label" for="va_meth_genomic">Genomic selection</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_meth_not_known" name="va_methodes_amelio" value="Not known"><label class="form-check-label" for="va_meth_not_known">Not known</label></div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_selection_ongoing">Is selective breeding on-going?</label>
+            <select class="form-select" id="va_selection_ongoing" name="va_selection_ongoing">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_type_programme">Breeding programme type</label>
+            <select class="form-select" id="va_type_programme" name="va_type_programme">
+              <option value="">(none)</option>
+              <option>Privately owned</option><option>Public-private partnership</option>
+              <option>Publicly owned</option><option>Unknown</option><option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_strategie_commerc">Commercialisation strategy?</label>
+            <select class="form-select" id="va_strategie_commerc" name="va_strategie_commerc">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_details_programme">Details on the programme</label>
+            <textarea class="form-control" id="va_details_programme" name="va_details_programme" rows="3" placeholder="Programme name, organisation, contact…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_historique_doc">Does it have a documented breeding history? <span class="help-icon" title="Archives, publications, internal reports">ⓘ</span></label>
+            <select class="form-select" id="va_historique_doc" name="va_historique_doc">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="va_ref_historique_wrap" style="display:none">
+            <label class="form-label" for="va_ref_historique">Reference details</label>
+            <textarea class="form-control" id="va_ref_historique" name="va_ref_historique" rows="3" placeholder="Author, year, title, link…"></textarea>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_ne_estimable">Can effective population size (Ne) be estimated? <span class="help-icon" title="Via pedigree or genomic data">ⓘ</span></label>
+            <select class="form-select" id="va_ne_estimable" name="va_ne_estimable">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6" id="va_ne_valeur_wrap" style="display:none">
+            <label class="form-label" for="va_ne_valeur">What is the effective population size of this farm type?</label>
+            <input type="number" class="form-control" id="va_ne_valeur" name="va_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Is the farm type registered in one or more of the following information systems?</label>
+            <div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_wiews" name="va_systemes_info" value="WIEWS"><label class="form-check-label" for="va_sys_wiews">WIEWS</label></div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_upov" name="va_systemes_info" value="UPOV"><label class="form-check-label" for="va_sys_upov">UPOV</label></div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_glis" name="va_systemes_info" value="GLIS"><label class="form-check-label" for="va_sys_glis">GLIS</label></div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_genesys" name="va_systemes_info" value="Genesys"><label class="form-check-label" for="va_sys_genesys">Genesys</label></div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_other" name="va_systemes_info" value="Other"><label class="form-check-label" for="va_sys_other">Other</label></div>
+              <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_sys_none" name="va_systemes_info" value="None"><label class="form-check-label" for="va_sys_none">None</label></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="va_registre_national">Is it recognized in a national registry of farm types?</label>
+            <select class="form-select" id="va_registre_national" name="va_registre_national">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="va_registre_details">Details</label>
+          <textarea class="form-control" id="va_registre_details" name="va_registre_details" rows="2" placeholder="Registration number, organisation…"></textarea>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label" for="va_has_heritable_char">Does it have heritable distinguishing characteristics?</label>
+            <select class="form-select" id="va_has_heritable_char" name="va_has_heritable_char">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+        </div>
+        <div id="va_heritable_wrap" style="display:none">
+          <div class="subsection mb-2">
+            <div class="subsection-title">Genetic characteristics</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_gen_snp" name="va_caract_genetiques" value="SNP panel"><label class="form-check-label" for="va_gen_snp">SNP panel</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_gen_mt" name="va_caract_genetiques" value="mtDNA"><label class="form-check-label" for="va_gen_mt">mtDNA</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_gen_micro" name="va_caract_genetiques" value="Microsatellites"><label class="form-check-label" for="va_gen_micro">Microsatellites</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_gen_wgs" name="va_caract_genetiques" value="Whole genome sequencing"><label class="form-check-label" for="va_gen_wgs">Whole genome sequencing</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_gen_nk" name="va_caract_genetiques" value="Not known"><label class="form-check-label" for="va_gen_nk">Not known</label></div>
+          </div>
+          <div class="subsection mb-2">
+            <div class="subsection-title">Qualitative phenotype</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pq_colour" name="va_phenotype_qualitatif" value="Colour"><label class="form-check-label" for="va_pq_colour">Colour</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pq_scale" name="va_phenotype_qualitatif" value="Scale pattern"><label class="form-check-label" for="va_pq_scale">Scale pattern</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pq_meristic" name="va_phenotype_qualitatif" value="Meristic characteristics"><label class="form-check-label" for="va_pq_meristic">Meristic characteristics</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pq_other" name="va_phenotype_qualitatif" value="Other"><label class="form-check-label" for="va_pq_other">Other</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pq_nk" name="va_phenotype_qualitatif" value="Not known"><label class="form-check-label" for="va_pq_nk">Not known</label></div>
+          </div>
+          <div class="subsection mb-2">
+            <div class="subsection-title">Quantitative performance characteristics</div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pqt_prod" name="va_phenotype_quantitatif" value="Production performance"><label class="form-check-label" for="va_pqt_prod">Production performance</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pqt_carc" name="va_phenotype_quantitatif" value="Carcass composition"><label class="form-check-label" for="va_pqt_carc">Carcass composition</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pqt_flesh" name="va_phenotype_quantitatif" value="Flesh quality"><label class="form-check-label" for="va_pqt_flesh">Flesh quality</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pqt_fitness" name="va_phenotype_quantitatif" value="Fitness"><label class="form-check-label" for="va_pqt_fitness">Fitness</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_pqt_nk" name="va_phenotype_quantitatif" value="Not known"><label class="form-check-label" for="va_pqt_nk">Not known</label></div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="va_desc_char_distinctives">Describe distinguishing characteristics</label>
+            <textarea class="form-control" id="va_desc_char_distinctives" name="va_desc_char_distinctives" rows="3" placeholder="Describe the distinguishing characteristics…"></textarea>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="va_sources">Sources <span class="help-icon" title="Documentary references">ⓘ</span></label>
+          <textarea class="form-control" id="va_sources" name="va_sources" rows="2" placeholder="URLs, publications, official documents…"></textarea>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Is this farm type subject to any conservation measure?</label>
+          <div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_cons_insitu" name="va_mesures_conservation" value="In situ conservation"><label class="form-check-label" for="va_cons_insitu">In situ conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_cons_exsitu_vivo" name="va_mesures_conservation" value="Ex situ in vivo conservation"><label class="form-check-label" for="va_cons_exsitu_vivo">Ex situ in vivo conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_cons_exsitu_vitro" name="va_mesures_conservation" value="Ex situ in vitro conservation"><label class="form-check-label" for="va_cons_exsitu_vitro">Ex situ in vitro conservation</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="checkbox" id="va_cons_none" name="va_mesures_conservation" value="None"><label class="form-check-label" for="va_cons_none">None</label></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="va_details_conservation">Details <span class="help-icon" title="Location, responsible organisation…">ⓘ</span></label>
+          <textarea class="form-control" id="va_details_conservation" name="va_details_conservation" rows="2" placeholder="Describe the measures in place…"></textarea>
+        </div>
+        <hr class="subtle">
+        <div class="row">
+          <div class="col-md-4">
+            <label class="form-label" for="va_export_type">Has this farm type been exported out of your country for aquaculture use?</label>
+            <select class="form-select" id="va_export_type" name="va_export_type">
+              <option value="">(none)</option><option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-8" id="va_details_export_wrap" style="display:none">
+            <label class="form-label" for="va_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea class="form-control" id="va_details_export" name="va_details_export" rows="3" placeholder="e.g. Spain (2018–2022), Portugal (2020)…"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end tab1 -->
+
+    <!-- ═══════════════════════════════════════ TAB 2 SUMMARY ═══════════════════════════════════════ -->
+    <div class="tab-pane fade" id="tab2">
+      <div class="card-section">
+        <div class="section-title">📝 Summary of entered data</div>
+        <div id="recap-content"></div>
+      </div>
+      <div class="card-section">
+        <div class="section-title">📧 Download and send your form</div>
+        <div style="display:flex; align-items:flex-start; gap:18px; margin-bottom:18px;">
+          <div style="background:#1a6b8a; color:white; font-weight:700; font-size:1.1rem; border-radius:50%; width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center;">1</div>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#1a6b8a; margin-bottom:6px;">Download your completed form as a CSV file</div>
+            <div style="font-size:0.86rem; color:#666; margin-bottom:10px;">The file contains all your entered data, ready to send.</div>
+            <button class="btn-export" onclick="exportCSV()">⬇ Download CSV form</button>
+          </div>
+        </div>
+        <hr class="subtle">
+        <div style="display:flex; align-items:flex-start; gap:18px;">
+          <div style="background:#0d4a63; color:white; font-weight:700; font-size:1.1rem; border-radius:50%; width:34px; height:34px; flex-shrink:0; display:flex; align-items:center; justify-content:center;">2</div>
+          <div style="flex:1;">
+            <div style="font-weight:600; color:#1a6b8a; margin-bottom:6px;">Send the file by e-mail</div>
+            <div style="background:#f0f7ff; border:1px solid #b8d6f0; border-radius:8px; padding:12px 16px; font-size:0.9rem; color:#2c5f8a;">
+              📎 Attach the downloaded file to an e-mail and send it to <strong>alexandra.pizzagalli@ifremer.fr</strong><br><br>
+              <span style="font-size:0.82rem; color:#666;">Suggested subject: AquaGRIS – [Species name] – [Date]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end tab2 -->
+
+  </div><!-- end tab-content -->
+</div><!-- end container -->
+
+<!-- Save banner -->
+<div id="save-banner">✓ Saved</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ─────────────────────────────────────────────────────────────
+// SPECIES DATA
+// ─────────────────────────────────────────────────────────────
+const especesByGroup = {
+  "Marine fish": ["Sparus aurata – Gilthead seabream","Dicentrarchus labrax – European seabass","Scophthalmus maximus – Turbot","Solea solea – Common sole","Argyrosomus regius – Meagre","Thunnus thynnus – Atlantic bluefin tuna","Gadus morhua – Atlantic cod"],
+  "Freshwater and euryhaline fish": ["Salmo salar – Atlantic salmon","Oncorhynchus mykiss – Rainbow trout","Cyprinus carpio – Common carp","Anguilla anguilla – European eel","Silurus glanis – Wels catfish"],
+  "Molluscs": ["Crassostrea gigas – Pacific oyster","Ostrea edulis – European flat oyster","Mytilus edulis – Blue mussel","Mytilus galloprovincialis – Mediterranean mussel","Pecten maximus – Great scallop","Haliotis tuberculata – European abalone"],
+  "Crustaceans": ["Penaeus vannamei – Whiteleg shrimp","Penaeus monodon – Giant tiger prawn","Homarus gammarus – European lobster","Carcinus maenas – Green crab"],
+  "Algae and aquatic plants": ["Undaria pinnatifida – Wakame","Saccharina latissima – Sugar kelp","Palmaria palmata – Dulse","Porphyra umbilicalis – Nori","Gracilaria spp.","Ulva lactuca – Sea lettuce"],
+  "Other aquatic animals": ["Apostichopus japonicus – Japanese sea cucumber","Paracentrotus lividus – Purple sea urchin","Sepia officinalis – Common cuttlefish","Octopus vulgaris – Common octopus"]
+};
+
+// ─────────────────────────────────────────────────────────────
+// DYNAMIC SPECIES DROPDOWN
+// ─────────────────────────────────────────────────────────────
+document.getElementById('groupe_taxo').addEventListener('change', function() {
+  const sel = document.getElementById('nom_espece');
+  const savedSpecies = sel.value;
+  sel.innerHTML = '<option value="">(none)</option>';
+  const especes = especesByGroup[this.value] || [];
+  especes.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e; opt.textContent = e;
+    sel.appendChild(opt);
+  });
+  const otherOpt = document.createElement('option');
+  otherOpt.value = 'other'; otherOpt.textContent = 'Other – enter manually';
+  sel.appendChild(otherOpt);
+  if (savedSpecies) sel.value = savedSpecies;
+});
+
+// ─────────────────────────────────────────────────────────────
+// CONDITIONAL PANELS
+// ─────────────────────────────────────────────────────────────
+function toggleEl(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = show ? '' : 'none';
+}
+
+document.getElementById('type_primaire').addEventListener('change', function() {
+  const v = this.value;
+  toggleEl('section-wild',    v === 'Wild sourced');
+  toggleEl('section-captive', v === 'Captive propagated');
+  toggleEl('section-strain',  v === 'Strain');
+  toggleEl('section-variety', v === 'Variety');
+  updateProgress();
+});
+
+function bindToggle(triggerId, wrapId, triggerValue) {
+  const el = document.getElementById(triggerId);
+  if (!el) return;
+  el.addEventListener('change', function() {
+    toggleEl(wrapId, this.value === triggerValue);
+  });
+}
+
+bindToggle('ws_stock_identifie',   'ws_ref_stock_wrap',       'yes');
+bindToggle('ws_export_type',       'ws_details_export_wrap',  'yes');
+bindToggle('cp_historique_doc',    'cp_ref_historique_wrap',  'yes');
+bindToggle('cp_ne_estimable',      'cp_ne_valeur_wrap',       'yes');
+bindToggle('cp_registre_national', 'cp_registre_details_wrap','yes');
+bindToggle('cp_export_type',       'cp_details_export_wrap',  'yes');
+bindToggle('st_historique_doc',    'st_ref_historique_wrap',  'yes');
+bindToggle('st_ne_estimable',      'st_ne_valeur_wrap',       'yes');
+bindToggle('st_registre_national', 'st_code_accession_wrap',  'yes');
+bindToggle('st_has_heritable_char','st_heritable_wrap',       'yes');
+bindToggle('st_export_type',       'st_details_export_wrap',  'yes');
+bindToggle('va_historique_doc',    'va_ref_historique_wrap',  'yes');
+bindToggle('va_ne_estimable',      'va_ne_valeur_wrap',       'yes');
+bindToggle('va_has_heritable_char','va_heritable_wrap',       'yes');
+bindToggle('va_export_type',       'va_details_export_wrap',  'yes');
+
+// ─────────────────────────────────────────────────────────────
+// PROGRESS BAR
+// ─────────────────────────────────────────────────────────────
+function updateProgress() {
+  const fields = ['groupe_taxo','nom_espece','nom_type','type_primaire'];
+  const filled = fields.filter(id => {
+    const el = document.getElementById(id);
+    return el && el.value && el.value.trim() !== '';
+  }).length;
+  const pct = Math.round(100 * filled / fields.length);
+  document.getElementById('prog_bar').style.width = pct + '%';
+  document.getElementById('prog_bar').setAttribute('aria-valuenow', pct);
+  document.getElementById('progress-label').textContent = 'Form completion: ' + pct + '%';
+}
+
+// ─────────────────────────────────────────────────────────────
+// LOCALSTORAGE – AUTO SAVE & RESTORE
+// ─────────────────────────────────────────────────────────────
+const SAVE_KEY = 'aquagris_primary_farm_type_v1';
+
+function getAllFormData() {
+  const data = {};
+  // text, email, number, textarea, select
+  document.querySelectorAll('input[type=text], input[type=email], input[type=number], textarea, select').forEach(el => {
+    if (el.id) data[el.id] = el.value;
+  });
+  // checkboxes (group by name)
+  const cbGroups = {};
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    if (!cbGroups[cb.name]) cbGroups[cb.name] = [];
+    if (cb.checked) cbGroups[cb.name].push(cb.value);
+  });
+  Object.assign(data, cbGroups);
+  return data;
+}
+
+function saveForm() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(getAllFormData()));
+    showSaveBanner();
+  } catch(e) { console.warn('localStorage unavailable'); }
+}
+
+function restoreForm() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+
+    // Restore taxonomic group first, then trigger species dropdown
+    if (data['groupe_taxo']) {
+      document.getElementById('groupe_taxo').value = data['groupe_taxo'];
+      document.getElementById('groupe_taxo').dispatchEvent(new Event('change'));
+    }
+
+    // Restore all text/select/number fields
+    Object.entries(data).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT')) {
+        el.value = val;
+      }
+    });
+
+    // Restore checkboxes
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      const saved = data[cb.name];
+      if (Array.isArray(saved)) cb.checked = saved.includes(cb.value);
+    });
+
+    // Trigger type_primaire change to show/hide sections
+    const tp = document.getElementById('type_primaire');
+    if (tp && tp.value) tp.dispatchEvent(new Event('change'));
+
+    // Trigger all conditional toggles
+    ['ws_stock_identifie','ws_export_type','cp_historique_doc','cp_ne_estimable',
+     'cp_registre_national','cp_export_type','st_historique_doc','st_ne_estimable',
+     'st_registre_national','st_has_heritable_char','st_export_type',
+     'va_historique_doc','va_ne_estimable','va_has_heritable_char','va_export_type'
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value) el.dispatchEvent(new Event('change'));
+    });
+
+    return true;
+  } catch(e) { return false; }
+}
+
+let saveTimer = null;
+function debouncedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveForm, 400);
+}
+
+document.addEventListener('input',  debouncedSave);
+document.addEventListener('change', debouncedSave);
+
+// Save banner
+let bannerTimer = null;
+function showSaveBanner() {
+  const b = document.getElementById('save-banner');
+  b.style.display = 'block'; b.style.opacity = '1';
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => { b.style.opacity = '0'; setTimeout(() => b.style.display='none', 300); }, 1500);
+}
+
+// ─────────────────────────────────────────────────────────────
+// SUMMARY TAB
+// ─────────────────────────────────────────────────────────────
+function getVal(id) {
+  const el = document.getElementById(id);
+  if (!el) return '—';
+  const v = el.value ? el.value.trim() : '';
+  return v || '—';
+}
+function getChecked(name) {
+  const vals = [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(cb => cb.value);
+  return vals.length ? vals.join(', ') : '—';
+}
+function row(label, value) {
+  const display = (value && value !== '—') ? `<span>${value}</span>` : `<span class="recap-empty">—</span>`;
+  return `<tr><td>${label}</td><td>${display}</td></tr>`;
+}
+function section(title, icon, rows) {
+  return `<div><div class="recap-section-title">${icon} ${title}</div><table class="recap-table">${rows}</table></div>`;
+}
+
+function buildSummary() {
+  const tp = getVal('type_primaire');
+  let html = '';
+  html += section('Person providing the information', '🌍',
+    row('SURNAME Name', getVal('contact')) + row('Email', getVal('email')));
+  html += section('Reference species', '🔬',
+    row('Taxonomic group', getVal('groupe_taxo')) + row('Species name', getVal('nom_espece')));
+  html += section('Farm type identification', '🏷️',
+    row('Name of the farm type', getVal('nom_type')) +
+    row('Description', getVal('desc_type')) +
+    row('Reporting person', getVal('nom_rapporteur')) +
+    row('Primary farm type', tp));
+
+  if (tp === 'Wild sourced') {
+    html += section('Wild Sourced', '🌊',
+      row('Life cycle stage collected', getVal('ws_stade_vie')) +
+      row('Where/when collected', getVal('ws_lieu_broodstock')) +
+      row('From known genetic stock?', getVal('ws_stock_identifie')) +
+      row('Stock reference', getVal('ws_ref_stock')) +
+      row('Principal rationale', getVal('ws_raison_commerciale')) +
+      row('Sources', getVal('ws_sources')) +
+      row('Exported out of country?', getVal('ws_export_type')) +
+      row('Export details', getVal('ws_details_export')));
+  } else if (tp === 'Captive propagated') {
+    html += section('Captive Propagated', '🐟',
+      row('Origin', getVal('cp_origine')) +
+      row('Origin details', getVal('cp_origine_details')) +
+      row('Species composition', getVal('cp_composition')) +
+      row('Generations in captivity', getVal('cp_nb_generations')) +
+      row('Risks differ from species?', getVal('cp_risques')) +
+      row('Principal rationale', getVal('cp_raison_commerciale')) +
+      row('Selective breeding techniques', getChecked('cp_methodes_amelio')) +
+      row('Documented breeding history?', getVal('cp_historique_doc')) +
+      row('Reference details', getVal('cp_ref_historique')) +
+      row('Ne estimable?', getVal('cp_ne_estimable')) +
+      row('Effective population size (Ne)', getVal('cp_ne_valeur')) +
+      row('National registry?', getVal('cp_registre_national')) +
+      row('Registry details', getVal('cp_registre_details')) +
+      row('Sources', getVal('cp_sources')) +
+      row('Conservation measures', getChecked('cp_mesures_conservation')) +
+      row('Details on conservation', getVal('cp_details_conservation')) +
+      row('Exported out of country?', getVal('cp_export_type')) +
+      row('Export details', getVal('cp_details_export')));
+  } else if (tp === 'Strain') {
+    html += section('Strain', '🧬',
+      row('Origin', getVal('st_origine')) +
+      row('Risks differ from species?', getVal('st_risques')) +
+      row('Species composition', getVal('st_composition')) +
+      row('How has it become a strain?', getVal('st_become')) +
+      row('Generations domesticated/selected', getVal('st_nb_generations')) +
+      row('Selective breeding techniques', getChecked('st_methodes_amelio')) +
+      row('Documented breeding history?', getVal('st_historique_doc')) +
+      row('Reference details', getVal('st_ref_historique')) +
+      row('Ne estimable?', getVal('st_ne_estimable')) +
+      row('Effective population size (Ne)', getVal('st_ne_valeur')) +
+      row('Principal rationale', getVal('st_raison_commerciale')) +
+      row('National registry?', getVal('st_registre_national')) +
+      row('Accession code', getVal('st_code_accession')) +
+      row('Registry details', getVal('st_registre_details')) +
+      row('Heritable characteristics?', getVal('st_has_heritable_char')) +
+      row('Genetic characteristics', getChecked('st_caract_genetiques')) +
+      row('Qualitative phenotype', getChecked('st_phenotype_qualitatif')) +
+      row('Quantitative performance', getChecked('st_phenotype_quantitatif')) +
+      row('Description distinguishing chars', getVal('st_desc_char_distinctives')) +
+      row('Sources', getVal('st_sources')) +
+      row('Conservation measures', getChecked('st_mesures_conservation')) +
+      row('Details on conservation', getVal('st_details_conservation')) +
+      row('Exported out of country?', getVal('st_export_type')) +
+      row('Export details', getVal('st_details_export')));
+  } else if (tp === 'Variety') {
+    html += section('Variety', '🌱',
+      row('Origin', getVal('va_origine')) +
+      row('Risks differ from species?', getVal('va_risques')) +
+      row('Species composition', getVal('va_composition')) +
+      row('How has it become a variety?', getVal('va_become')) +
+      row('Generations domesticated/selected', getVal('va_nb_generations')) +
+      row('Selective breeding techniques', getChecked('va_methodes_amelio')) +
+      row('Selective breeding on-going?', getVal('va_selection_ongoing')) +
+      row('Breeding programme type', getVal('va_type_programme')) +
+      row('Commercialisation strategy?', getVal('va_strategie_commerc')) +
+      row('Details on the programme', getVal('va_details_programme')) +
+      row('Documented breeding history?', getVal('va_historique_doc')) +
+      row('Reference details', getVal('va_ref_historique')) +
+      row('Ne estimable?', getVal('va_ne_estimable')) +
+      row('Effective population size (Ne)', getVal('va_ne_valeur')) +
+      row('Information systems registered', getChecked('va_systemes_info')) +
+      row('National registry?', getVal('va_registre_national')) +
+      row('Registry details', getVal('va_registre_details')) +
+      row('Heritable characteristics?', getVal('va_has_heritable_char')) +
+      row('Genetic characteristics', getChecked('va_caract_genetiques')) +
+      row('Qualitative phenotype', getChecked('va_phenotype_qualitatif')) +
+      row('Quantitative performance', getChecked('va_phenotype_quantitatif')) +
+      row('Description distinguishing chars', getVal('va_desc_char_distinctives')) +
+      row('Sources', getVal('va_sources')) +
+      row('Conservation measures', getChecked('va_mesures_conservation')) +
+      row('Details on conservation', getVal('va_details_conservation')) +
+      row('Exported out of country?', getVal('va_export_type')) +
+      row('Export details', getVal('va_details_export')));
+  }
+  document.getElementById('recap-content').innerHTML = html;
+}
+
+document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+  tab.addEventListener('shown.bs.tab', e => {
+    if (e.target.getAttribute('href') === '#tab2') buildSummary();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────
+// CSV EXPORT
+// ─────────────────────────────────────────────────────────────
+function exportCSV() {
+  const data = getAllFormData();
+  const rows = [['Field','Value']];
+  Object.entries(data).forEach(([k, v]) => {
+    const val = Array.isArray(v) ? v.join(' | ') : (v || '');
+    rows.push([k, val]);
+  });
+  const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const species = (data['nom_espece'] || 'species').replace(/[^A-Za-z0-9]/g,'_').substring(0,30);
+  const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `AquaGRIS_PrimaryFarmType_${species}_${date}.csv`;
+  a.click();
+}
+
+// ─────────────────────────────────────────────────────────────
+// INIT – restore on page load
+// ─────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const restored = restoreForm();
+  if (restored) {
+    document.getElementById('restore-notice').style.display = 'block';
+    setTimeout(() => document.getElementById('restore-notice').style.display = 'none', 5000);
+  }
+  updateProgress();
+  document.addEventListener('input', updateProgress);
+  document.addEventListener('change', updateProgress);
+});
+</script>
+</body>
+</html>
