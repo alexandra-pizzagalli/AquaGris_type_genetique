@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaGRIS – Farm Type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue:       #1a6b8a;
+    --blue-dark:  #0d4a63;
+    --blue-light: #e8f4f8;
+    --blue-mid:   #cde0ea;
+    --accent:     #2b9ebc;
+    --bg:         #f0f4f7;
+    --white:      #ffffff;
+    --grey-100:   #f5fafc;
+    --grey-200:   #e8ecef;
+    --grey-400:   #aab4bc;
+    --grey-700:   #4a5568;
+    --text:       #1e2d3a;
+    --red:        #dc3545;
+    --green:      #2e7d52;
+    --radius:     10px;
+    --shadow:     0 2px 10px rgba(0,0,0,.07);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ── */
+  .fao-header {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.18);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .fao-logo {
+    width: 48px; height: 48px; flex-shrink: 0;
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6rem;
+  }
+  .fao-title   { font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
+  .fao-subtitle{ font-size: 0.78rem; opacity: .75; margin-top: 2px; }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-200);
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .progress-label { font-size: 0.82rem; color: var(--grey-700); font-weight: 600; white-space: nowrap; min-width: 160px; }
+  .progress-bar-bg { flex: 1; height: 7px; background: var(--grey-200); border-radius: 4px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--blue); border-radius: 4px; transition: width .4s ease; width: 0%; }
+
+  /* ── TABS ── */
+  .tabs-nav {
+    display: flex;
+    gap: 0;
+    background: var(--white);
+    border-bottom: 2px solid var(--grey-200);
+    padding: 0 32px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 12px 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--grey-700);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .18s, border-color .18s;
+    margin-bottom: -2px;
+  }
+  .tab-btn:hover  { color: var(--blue); }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 1050px; margin: 0 auto; padding: 26px 24px 60px; }
+
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid transparent;
+    transition: border-left-color .2s;
+  }
+  .card:focus-within { border-left-color: var(--blue); }
+  .card-title {
+    font-weight: 700;
+    font-size: 0.97rem;
+    color: var(--blue);
+    border-bottom: 2px solid var(--blue-light);
+    padding-bottom: 9px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  /* ── SUBSECTION ── */
+  .subsection {
+    background: var(--grey-100);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin: 12px 0;
+  }
+  .subsection-title {
+    font-weight: 600;
+    color: var(--blue-dark);
+    font-size: 0.86rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  /* ── GRID ── */
+  .row   { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 0; }
+  .col-6 { flex: 1 1 calc(50% - 9px); min-width: 220px; }
+  .col-4 { flex: 1 1 calc(33% - 12px); min-width: 180px; }
+  .col-8 { flex: 2 1 calc(66% - 6px); min-width: 280px; }
+  .col-12{ flex: 1 1 100%; }
+
+  /* ── FORM ELEMENTS ── */
+  .form-group { margin-bottom: 14px; }
+  label {
+    display: block;
+    font-weight: 600;
+    color: var(--grey-700);
+    font-size: 0.86rem;
+    margin-bottom: 5px;
+  }
+  .req { color: var(--red); margin-left: 2px; }
+  .help-icon {
+    color: var(--accent);
+    font-size: 0.78rem;
+    margin-left: 3px;
+    cursor: help;
+    vertical-align: super;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px 11px;
+    border: 1.5px solid var(--grey-200);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.91rem;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color .18s, box-shadow .18s;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(26,107,138,.1);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231a6b8a' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+  /* ── CHECKBOXES / RADIOS ── */
+  .check-group { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 4px; }
+  .check-item  { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .check-item input { width: auto; margin: 0; accent-color: var(--blue); }
+  .check-item span  { font-size: 0.88rem; color: var(--text); }
+
+  /* ── CONDITIONAL PANELS ── */
+  .cond { display: none; }
+  .cond.show { display: block; }
+
+  /* ── DIVIDERS ── */
+  hr.subtle { border: none; border-top: 1px solid var(--grey-200); margin: 16px 0; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: var(--blue-light);
+    border: 1px solid var(--blue-mid);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    color: var(--blue-dark);
+  }
+  .info-box.warn {
+    background: #fff8e1;
+    border-color: #f0c040;
+    color: #7a5f00;
+  }
+
+  /* ── STEPS ── */
+  .steps-row { display: flex; gap: 18px; align-items: flex-start; }
+  .step-num  {
+    background: var(--blue);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 700; color: var(--blue); margin-bottom: 5px; }
+
+  /* ── BUTTON ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 26px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: background .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--blue); color: white; }
+  .btn-primary:hover { background: var(--blue-dark); }
+  .btn-secondary { background: var(--blue-light); color: var(--blue); border: 1.5px solid var(--blue-mid); }
+  .btn-secondary:hover { background: var(--blue-mid); }
+
+  /* ── SUMMARY ── */
+  .summary-block { border: 1px solid var(--blue-mid); border-top: none; border-radius: 0 0 8px 8px; padding: 20px 22px; margin-bottom: 20px; }
+  .summary-header { background: var(--blue); color: white; font-weight: 700; font-size: 1rem; border-radius: 8px 8px 0 0; padding: 12px 20px; }
+  .summary-header.secondary { background: var(--blue-dark); }
+  .summary-section-title {
+    font-weight: 700; font-size: 0.92rem; color: var(--blue);
+    border-bottom: 2px solid var(--blue-light); padding-bottom: 7px; margin: 16px 0 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .summary-table { width: 100%; border-collapse: collapse; }
+  .summary-table td { padding: 5px 8px 5px 0; vertical-align: top; font-size: 0.9rem; }
+  .summary-table td:first-child { font-weight: 600; color: var(--blue-dark); width: 45%; }
+  .summary-table td:last-child { color: var(--text); }
+  .empty-val { color: var(--grey-400); font-style: italic; }
+
+  /* ── COPY / PRINT BUTTONS ── */
+  .toolbar { display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 14px; }
+
+  /* ── LOCKED PANEL ── */
+  .locked-msg { color: var(--grey-400); font-style: italic; padding: 12px 0; font-size: 0.9rem; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .fao-header { padding: 14px 16px; }
+    .tabs-nav   { padding: 0 12px; }
+    .container  { padding: 16px 12px 40px; }
+    .card       { padding: 16px 14px; }
+    .col-6, .col-4, .col-8 { flex: 1 1 100%; }
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    .fao-header, .progress-wrap, .tabs-nav, .toolbar, .btn { display: none !important; }
+    .tab-pane { display: block !important; }
+    .card { box-shadow: none; border: 1px solid var(--grey-200); page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="fao-header">
+  <div class="fao-logo">🐠</div>
+  <div>
+    <div class="fao-title">AquaGRIS – Farm Type</div>
+    <div class="fao-subtitle">Food and Agriculture Organization of the United Nations &nbsp;|&nbsp; Aquatic Genetic Resources Information System</div>
+  </div>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-label" id="progress-label">Form completion: 0%</div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<nav class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab('primary',this)">🧬 Primary Farm Type</button>
+  <button class="tab-btn"        onclick="switchTab('secondary',this)" id="tab-btn-secondary">🔬 Secondary Farm Type 1</button>
+  <button class="tab-btn"        onclick="switchTab('summary',this)" id="tab-btn-summary">📄 Summary</button>
+</nav>
+
+<div class="container">
+
+<!-- ── SAVE / LOAD BAR (always visible) ─────────────────────────────────── -->
+<div style="background:#f0f7f0; border:1px solid #a5d6a7; border-radius:8px; padding:8px 16px; margin-bottom:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+  <span style="font-size:0.85rem; color:#444;">Save the form, and load it to complete later</span>
+  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+    <button onclick="exportJSON()" style="background:#2e7d32; color:white; border:none; border-radius:6px; padding:5px 12px; font-size:0.82rem; cursor:pointer;">Save</button>
+    <label style="background:#5c6bc0; color:white; border:none; border-radius:6px; padding:5px 12px; font-size:0.82rem; cursor:pointer; margin:0;">
+      Load
+      <input type="file" accept=".json" onchange="importJSON(event)" style="display:none;">
+    </label>
+    <span id="topbar-confirm" style="display:none; color:#2e7d32; font-size:0.82rem; font-weight:600; align-self:center;">✔ Loaded!</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     TAB 1 – PRIMARY FARM TYPE
+═══════════════════════════════════════════════════════════════════════ -->
+<div id="tab-primary" class="tab-pane active">
+
+  <!-- Contact -->
+  <div class="card">
+    <div class="card-title">🌍 Person providing the information</div>
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="contact">SURNAME Name</label>
+        <input type="text" id="contact" placeholder="">
+      </div>
+      <div class="col-6 form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="">
+      </div>
+    </div>
+  </div>
+
+  <!-- Species -->
+  <div class="card">
+    <div class="card-title">🔬 Species</div>
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="groupe_taxo">Taxonomic group</label>
+        <select id="groupe_taxo" onchange="updateProgress(); saveToLocalStorage()">
+          <option value="">(none)</option>
+          <option>Algae and aquatic plants</option>
+          <option>Crustaceans</option>
+          <option>Freshwater and euryhaline fish</option>
+          <option>Marine fish</option>
+          <option>Molluscs</option>
+          <option>Other aquatic animals</option>
+        </select>
+      </div>
+      <div class="col-6 form-group">
+        <label for="nom_espece">Species name <span class="req">*</span></label>
+        <input type="text" id="nom_espece" placeholder="e.g. Salmo salar – Atlantic salmon" oninput="updateProgress(); saveToLocalStorage()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Farm type identification -->
+  <div class="card">
+    <div class="card-title">🏷️ Farm type identification</div>
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="nom_type">Name of the farm type <span class="req">*</span></label>
+        <input type="text" id="nom_type" oninput="updateProgress()">
+      </div>
+      <div class="col-6 form-group">
+        <label for="desc_type">Description</label>
+        <textarea id="desc_type" ></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="nom_rapporteur">Name of person reporting information (if different from national focal point)</label>
+        <input type="text" id="nom_rapporteur">
+      </div>
+      <div class="col-6 form-group">
+        <label for="type_primaire">Primary farm type <span class="req">*</span></label>
+        <select id="type_primaire" onchange="showPrimaryType(); updateProgress()">
+          <option value="">(none)</option>
+          <option value="Wild sourced">Wild sourced</option>
+          <option value="Captive propagated">Captive propagated</option>
+          <option value="Strain">Strain</option>
+          <option value="Variety">Variety</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WILD SOURCED ── -->
+  <div id="cond-ws" class="cond">
+    <div class="card">
+      <div class="card-title">🌊 Wild Sourced – Details</div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="ws_stade_vie">What stage of the life cycle is it collected?</label>
+          <select id="ws_stade_vie">
+            <option value="">(none)</option>
+            <option>Eggs</option><option>Larvae</option><option>Juveniles</option>
+            <option>Broodstock</option><option>Adults</option><option>Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="ws_lieu_broodstock">Where and when is it collected?</label>
+          <textarea id="ws_lieu_broodstock" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="ws_stock_identifie">Is it derived from a known and identified genetic stock?</label>
+          <select id="ws_stock_identifie" onchange="toggleCond('cond-ws-stock','ws_stock_identifie','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-ws-stock" class="cond">
+            <label for="ws_ref_stock">Stock reference <span class="help-icon" title="Name, location or publication describing the genetic stock">ⓘ</span></label>
+            <textarea id="ws_ref_stock" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="ws_raison_commerciale">What is the principal rationale for commercial production?</label>
+        <textarea id="ws_raison_commerciale" ></textarea>
+      </div>
+      <div class="form-group">
+        <label for="ws_pct_production">Estimated production of this farmed type (in percentage of production of the species)</label>
+        <input type="number" id="ws_pct_production" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="ws_sources">Sources</label>
+        <textarea id="ws_sources" ></textarea>
+      </div>
+      <hr class="subtle">
+      <div class="row">
+        <div class="col-4 form-group">
+          <label for="ws_export_type">Has this farm type been exported out of your country?</label>
+          <select id="ws_export_type" onchange="toggleCond('cond-ws-export','ws_export_type','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-8 form-group">
+          <div id="cond-ws-export" class="cond">
+            <label for="ws_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea id="ws_details_export" ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CAPTIVE PROPAGATED ── -->
+  <div id="cond-cp" class="cond">
+    <div class="card">
+      <div class="card-title">🐟 Captive Propagated – Details</div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_origine">What is the origin of this farmed type?</label>
+          <select id="cp_origine">
+            <option value="">(none)</option>
+            <option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="cp_origine_details">Details</label>
+          <textarea id="cp_origine_details" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_composition">What is the species composition?</label>
+          <select id="cp_composition">
+            <option value="">(none)</option>
+            <option>Pure species</option><option>Introgressed</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="cp_nb_generations">How many generations has it been maintained in captivity?</label>
+          <input type="number" id="cp_nb_generations" min="0" step="1">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_natif">Is this farmed type coming from a native species of the country?</label>
+          <select id="cp_natif" onchange="toggleCond('cond-cp-natif','cp_natif','no')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="cp_raison_commerciale">What is the principal rationale for commercial production?</label>
+          <textarea id="cp_raison_commerciale" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <div id="cond-cp-natif" class="cond">
+            <label for="cp_risque_eval">Has a risk assessment been done on the species related to this farmed type? If yes, are the risks of this farmed type different from the risks of the species in general?</label>
+            <textarea id="cp_risque_eval" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="subsection">
+        <div class="subsection-title">What selective breeding techniques were used?</div>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Mass selection"><span>Mass selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Family selection"><span>Family selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Within family selection"><span>Within family selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Combined selection"><span>Combined selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Marker assisted selection"><span>Marker assisted selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Genomic selection"><span>Genomic selection</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_methodes_amelio" value="Not known"><span>Not known</span></label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_historique_doc">Does it have a documented breeding history?</label>
+          <select id="cp_historique_doc" onchange="toggleCond('cond-cp-hist','cp_historique_doc','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-cp-hist" class="cond">
+            <label for="cp_ref_historique">Reference details</label>
+            <textarea id="cp_ref_historique" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_ne_estimable">Can effective population size (Ne) be estimated?</label>
+          <select id="cp_ne_estimable" onchange="toggleCond('cond-cp-ne','cp_ne_estimable','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-cp-ne" class="cond">
+            <label for="cp_ne_valeur">Effective population size (Ne)</label>
+            <input type="number" id="cp_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="cp_registre_national">Is it recognized in a national registry?</label>
+          <select id="cp_registre_national" onchange="toggleCond('cond-cp-reg','cp_registre_national','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-cp-reg" class="cond">
+            <label for="cp_registre_details">Details</label>
+            <textarea id="cp_registre_details" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cp_pct_production">Estimated production of this farmed type (in percentage of production of the species)</label>
+        <input type="number" id="cp_pct_production" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="cp_sources">Sources</label>
+        <textarea id="cp_sources" ></textarea>
+      </div>
+      <div class="form-group">
+        <label>Is this farm type subject to any conservation measure?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="cp_mesures_conservation" value="In situ conservation"><span>In situ conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_mesures_conservation" value="Ex situ in vivo conservation"><span>Ex situ in vivo conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_mesures_conservation" value="Ex situ in vitro conservation"><span>Ex situ in vitro conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="cp_mesures_conservation" value="None"><span>None</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cp_details_conservation">Details</label>
+        <textarea id="cp_details_conservation" ></textarea>
+      </div>
+      <hr class="subtle">
+      <div class="row">
+        <div class="col-4 form-group">
+          <label for="cp_export_type">Has this farm type been exported out of your country?</label>
+          <select id="cp_export_type" onchange="toggleCond('cond-cp-export','cp_export_type','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-8 form-group">
+          <div id="cond-cp-export" class="cond">
+            <label for="cp_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea id="cp_details_export" ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STRAIN ── -->
+  <div id="cond-st" class="cond">
+    <div class="card">
+      <div class="card-title">🧬 Strain – Details</div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_origine">What is the origin of this farm type?</label>
+          <select id="st_origine">
+            <option value="">(none)</option>
+            <option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="st_natif">Is this farmed type coming from a native species of the country?</label>
+          <select id="st_natif" onchange="toggleCond('cond-st-natif','st_natif','no')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <div id="cond-st-natif" class="cond">
+            <label for="st_risque_eval">Has a risk assessment been done on the species related to this farmed type? If yes, are the risks of this farmed type different from the risks of the species in general?</label>
+            <textarea id="st_risque_eval" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_composition">What is the species composition?</label>
+          <select id="st_composition">
+            <option value="">(none)</option>
+            <option>Pure species</option><option>Introgressed</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="st_become">How has it become a strain?</label>
+          <select id="st_become">
+            <option value="">(none)</option>
+            <option>Domestication selection</option><option>Selective breeding</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_nb_generations">How many generations has it been domesticated/selected?</label>
+          <input type="number" id="st_nb_generations" min="0" step="1">
+        </div>
+        <div class="col-6 form-group">
+          <label for="st_raison_commerciale">What is the principal rationale for commercial production?</label>
+          <textarea id="st_raison_commerciale" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_historique_doc">Does it have a documented breeding history?</label>
+          <select id="st_historique_doc" onchange="toggleCond('cond-st-hist','st_historique_doc','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-st-hist" class="cond">
+            <label for="st_ref_historique">Reference details</label>
+            <textarea id="st_ref_historique" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_ne_estimable">Can effective population size (Ne) be estimated?</label>
+          <select id="st_ne_estimable" onchange="toggleCond('cond-st-ne','st_ne_estimable','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-st-ne" class="cond">
+            <label for="st_ne_valeur">Effective population size (Ne)</label>
+            <input type="number" id="st_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_registre_national">Is it recognized in a national registry?</label>
+          <select id="st_registre_national" onchange="toggleCond('cond-st-reg','st_registre_national','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-st-reg" class="cond">
+            <label for="st_code_accession">Strain accession code in the national registry</label>
+            <input type="text" id="st_code_accession">
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="st_registre_details">Registry details</label>
+        <textarea id="st_registre_details" ></textarea>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="st_has_heritable_char">Does it have heritable distinguishing characteristics?</label>
+          <select id="st_has_heritable_char" onchange="toggleCond('cond-st-char','st_has_heritable_char','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div id="cond-st-char" class="cond">
+        <div class="subsection">
+          <div class="subsection-title">Genetic characteristics</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="st_caract_genetiques" value="SNP panel"><span>SNP panel</span></label>
+            <label class="check-item"><input type="checkbox" name="st_caract_genetiques" value="mtDNA"><span>mtDNA</span></label>
+            <label class="check-item"><input type="checkbox" name="st_caract_genetiques" value="Microsatellites"><span>Microsatellites</span></label>
+            <label class="check-item"><input type="checkbox" name="st_caract_genetiques" value="Whole genome sequencing"><span>Whole genome sequencing</span></label>
+            <label class="check-item"><input type="checkbox" name="st_caract_genetiques" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Qualitative phenotype</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="st_phenotype_qualitatif" value="Colour"><span>Colour</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_qualitatif" value="Scale pattern"><span>Scale pattern</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_qualitatif" value="Meristic characteristics"><span>Meristic characteristics</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_qualitatif" value="Other"><span>Other</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_qualitatif" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Quantitative performance characteristics</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="st_phenotype_quantitatif" value="Production performance"><span>Production performance</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_quantitatif" value="Carcass composition"><span>Carcass composition</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_quantitatif" value="Flesh quality"><span>Flesh quality</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_quantitatif" value="Fitness"><span>Fitness</span></label>
+            <label class="check-item"><input type="checkbox" name="st_phenotype_quantitatif" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="st_desc_char_distinctives">Describe distinguishing characteristics</label>
+          <textarea id="st_desc_char_distinctives" ></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="st_pct_production">Estimated production of this farmed type (in percentage of production of the species)</label>
+        <input type="number" id="st_pct_production" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="st_tendance_production">What is the current trend of aquaculture production for this farmed type (i.e. over the last 10 years)?</label>
+        <select id="st_tendance_production">
+          <option value="">(none)</option>
+          <option>Increasing</option>
+          <option>Stable</option>
+          <option>Fluctuating</option>
+          <option>Decreasing</option>
+          <option>No longer cultured</option>
+          <option>Extinct</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="st_sources">Sources</label>
+        <textarea id="st_sources" ></textarea>
+      </div>
+      <div class="form-group">
+        <label>Is this farm type subject to any conservation measure?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="st_mesures_conservation" value="In situ conservation"><span>In situ conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="st_mesures_conservation" value="Ex situ in vivo conservation"><span>Ex situ in vivo conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="st_mesures_conservation" value="Ex situ in vitro conservation"><span>Ex situ in vitro conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="st_mesures_conservation" value="None"><span>None</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="st_details_conservation">Details</label>
+        <textarea id="st_details_conservation" ></textarea>
+      </div>
+      <hr class="subtle">
+      <div class="row">
+        <div class="col-4 form-group">
+          <label for="st_export_type">Has this farm type been exported out of your country?</label>
+          <select id="st_export_type" onchange="toggleCond('cond-st-export','st_export_type','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-8 form-group">
+          <div id="cond-st-export" class="cond">
+            <label for="st_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea id="st_details_export" ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VARIETY ── -->
+  <div id="cond-va" class="cond">
+    <div class="card">
+      <div class="card-title">🌱 Variety – Details</div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_origine">What is the origin of this farm type?</label>
+          <select id="va_origine">
+            <option value="">(none)</option>
+            <option>Developed in Country</option><option>Introduced</option><option>Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="va_natif">Is this farmed type coming from a native species of the country?</label>
+          <select id="va_natif" onchange="toggleCond('cond-va-natif','va_natif','no')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <div id="cond-va-natif" class="cond">
+            <label for="va_risque_eval">Has a risk assessment been done on the species related to this farmed type? If yes, are the risks of this farmed type different from the risks of the species in general?</label>
+            <textarea id="va_risque_eval" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_composition">What is the species composition?</label>
+          <select id="va_composition">
+            <option value="">(none)</option>
+            <option>Pure species</option><option>Introgressed</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="va_become">How has it become a variety?</label>
+          <select id="va_become">
+            <option value="">(none)</option>
+            <option>Domestication selection</option><option>Selective breeding</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_nb_generations">How many generations has it been domesticated/selected?</label>
+          <input type="number" id="va_nb_generations" min="0" step="1">
+        </div>
+        <div class="col-6 form-group">
+          <label for="va_raison_commerciale">What is the principal rationale for commercial production?</label>
+          <textarea id="va_raison_commerciale" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_historique_doc">Does it have a documented breeding history?</label>
+          <select id="va_historique_doc" onchange="toggleCond('cond-va-hist','va_historique_doc','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-va-hist" class="cond">
+            <label for="va_ref_historique">Reference details</label>
+            <textarea id="va_ref_historique" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_ne_estimable">Can effective population size (Ne) be estimated?</label>
+          <select id="va_ne_estimable" onchange="toggleCond('cond-va-ne','va_ne_estimable','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-va-ne" class="cond">
+            <label for="va_ne_valeur">Effective population size (Ne)</label>
+            <input type="number" id="va_ne_valeur" min="1" step="1">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label>Is the farm type registered in one or more information systems?</label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="WIEWS"><span>WIEWS</span></label>
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="UPOV"><span>UPOV</span></label>
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="GLIS"><span>GLIS</span></label>
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="Genesys"><span>Genesys</span></label>
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="Other"><span>Other</span></label>
+            <label class="check-item"><input type="checkbox" name="va_systemes_info" value="None"><span>None</span></label>
+          </div>
+        </div>
+        <div class="col-6 form-group">
+          <label for="va_registre_national">Is it recognized in a national registry?</label>
+          <select id="va_registre_national" onchange="toggleCond('cond-va-reg','va_registre_national','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div id="cond-va-reg" class="cond">
+          <label for="va_registre_details">Registry details</label>
+          <textarea id="va_registre_details" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="va_has_heritable_char">Does it have heritable distinguishing characteristics?</label>
+          <select id="va_has_heritable_char" onchange="toggleCond('cond-va-char','va_has_heritable_char','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div id="cond-va-char" class="cond">
+        <div class="subsection">
+          <div class="subsection-title">Genetic characteristics</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="va_caract_genetiques" value="SNP panel"><span>SNP panel</span></label>
+            <label class="check-item"><input type="checkbox" name="va_caract_genetiques" value="mtDNA"><span>mtDNA</span></label>
+            <label class="check-item"><input type="checkbox" name="va_caract_genetiques" value="Microsatellites"><span>Microsatellites</span></label>
+            <label class="check-item"><input type="checkbox" name="va_caract_genetiques" value="Whole genome sequencing"><span>Whole genome sequencing</span></label>
+            <label class="check-item"><input type="checkbox" name="va_caract_genetiques" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Qualitative phenotype</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="va_phenotype_qualitatif" value="Colour"><span>Colour</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_qualitatif" value="Scale pattern"><span>Scale pattern</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_qualitatif" value="Meristic characteristics"><span>Meristic characteristics</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_qualitatif" value="Other"><span>Other</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_qualitatif" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="subsection">
+          <div class="subsection-title">Quantitative performance characteristics</div>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox" name="va_phenotype_quantitatif" value="Production performance"><span>Production performance</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_quantitatif" value="Carcass composition"><span>Carcass composition</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_quantitatif" value="Flesh quality"><span>Flesh quality</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_quantitatif" value="Fitness"><span>Fitness</span></label>
+            <label class="check-item"><input type="checkbox" name="va_phenotype_quantitatif" value="Not known"><span>Not known</span></label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="va_desc_char_distinctives">Describe distinguishing characteristics</label>
+          <textarea id="va_desc_char_distinctives" ></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="va_pct_production">Estimated production of this farmed type (in percentage of production of the species)</label>
+        <input type="number" id="va_pct_production" min="0" max="100" step="0.1">
+      </div>
+      <div class="form-group">
+        <label for="va_tendance_production">What is the current trend of aquaculture production for this farmed type (i.e. over the last 10 years)?</label>
+        <select id="va_tendance_production">
+          <option value="">(none)</option>
+          <option>Increasing</option>
+          <option>Stable</option>
+          <option>Fluctuating</option>
+          <option>Decreasing</option>
+          <option>No longer cultured</option>
+          <option>Extinct</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="va_sources">Sources</label>
+        <textarea id="va_sources" ></textarea>
+      </div>
+      <div class="form-group">
+        <label>Is this farm type subject to any conservation measure?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" name="va_mesures_conservation" value="In situ conservation"><span>In situ conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="va_mesures_conservation" value="Ex situ in vivo conservation"><span>Ex situ in vivo conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="va_mesures_conservation" value="Ex situ in vitro conservation"><span>Ex situ in vitro conservation</span></label>
+          <label class="check-item"><input type="checkbox" name="va_mesures_conservation" value="None"><span>None</span></label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="va_details_conservation">Details</label>
+        <textarea id="va_details_conservation" ></textarea>
+      </div>
+      <hr class="subtle">
+      <div class="row">
+        <div class="col-4 form-group">
+          <label for="va_export_type">Has this farm type been exported out of your country?</label>
+          <select id="va_export_type" onchange="toggleCond('cond-va-export','va_export_type','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option>
+          </select>
+        </div>
+        <div class="col-8 form-group">
+          <div id="cond-va-export" class="cond">
+            <label for="va_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+            <textarea id="va_details_export" ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary gateway -->
+  <div class="card">
+    <div class="card-title">🔀 Secondary Farm Type</div>
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="has_secondary">Does this farm type have a secondary farm type? <span class="help-icon" title="A secondary farm type results from genetic modification, hybridisation, polyploidisation, etc.">ⓘ</span></label>
+        <select id="has_secondary" onchange="toggleSecondaryAlert()">
+          <option value="">(none)</option>
+          <option value="yes">Yes</option><option value="no">No</option>
+        </select>
+      </div>
+      <div class="col-6" id="secondary-alert" style="display:none; padding-top:28px;">
+        <div class="info-box">
+          ➡ Go to the <strong>🔬 Secondary Farm Type</strong> tab to fill in the details.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-primary -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     TAB 2 – SECONDARY FARM TYPE
+═══════════════════════════════════════════════════════════════════════ -->
+<div id="tab-secondary" class="tab-pane">
+
+  <div id="secondary-locked" class="card">
+    <div class="locked-msg">⚠ Please select <strong>"Yes"</strong> for the question "Does this farm type have a secondary farm type?" in the Primary Farm Type tab to unlock this section.</div>
+  </div>
+
+  <div id="secondary-content" style="display:none;">
+
+    <!-- Identification -->
+    <div class="card">
+      <div class="card-title">🔬 Secondary Farm Type – Identification</div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="sec_nom_type">Name of the farmed type <span class="req">*</span></label>
+          <input type="text" id="sec_nom_type">
+        </div>
+        <div class="col-6 form-group">
+          <label for="sec_desc_type">Description</label>
+          <textarea id="sec_desc_type" ></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="sec_type">Secondary farmed type <span class="req">*</span></label>
+          <select id="sec_type" onchange="showSecondaryType()">
+            <option value="">(none)</option>
+            <option value="Introgressed">Introgressed</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Crossbred">Crossbred</option>
+            <option value="Polyploid">Polyploid</option>
+            <option value="Monosex">Monosex (genetic)</option>
+            <option value="Transgenic">Transgenic</option>
+            <option value="Gene edited">Gene edited</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <label for="sec_origine">What is the origin of this farmed type?</label>
+          <select id="sec_origine">
+            <option value="">(none)</option>
+            <option>Developed in Country</option><option>Introduced</option><option>Not known</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="sec_registre_national">Is it recognized in a national registration system?</label>
+          <select id="sec_registre_national" onchange="toggleCond('cond-sec-reg','sec_registre_national','yes')">
+            <option value="">(none)</option>
+            <option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div class="col-6 form-group">
+          <div id="cond-sec-reg" class="cond">
+            <label for="sec_registre_details">Details</label>
+            <textarea id="sec_registre_details" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6 form-group">
+          <label for="sec_rationale">What is the principal rationale for commercial production?</label>
+          <select id="sec_rationale">
+            <option value="">(none)</option>
+            <option>Culture performance</option>
+            <option>Market access</option>
+            <option>Intellectual property protection</option>
+            <option>Sex control (e.g. monosex or sterility)</option>
+            <option>Recreational fishing</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- HYBRID -->
+    <div id="cond-sec-hybrid" class="cond">
+      <div class="card">
+        <div class="card-title">🔀 Hybrid – Details</div>
+        <div class="form-group">
+          <label for="hy_species_hybridized">Species with which this species is hybridized</label>
+          <input type="text" id="hy_species_hybridized" >
+        </div>
+      </div>
+    </div>
+
+    <!-- CROSSBRED -->
+    <div id="cond-sec-crossbred" class="cond">
+      <div class="card">
+        <div class="card-title">🔀 Crossbred – Details</div>
+        <div class="form-group">
+          <label for="cb_farmed_type_crossed">Farmed type with which this farmed type is crossed to generate the crossbred</label>
+          <textarea id="cb_farmed_type_crossed" ></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- POLYPLOID -->
+    <div id="cond-sec-polyploid" class="cond">
+      <div class="card">
+        <div class="card-title">🧫 Polyploid – Details</div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="pl_nb_chromosomes">Number of sets of chromosomes</label>
+            <input type="number" id="pl_nb_chromosomes" min="2" step="1">
+          </div>
+          <div class="col-6 form-group">
+            <label for="pl_methode">What method is used to produce this farmed type?</label>
+            <select id="pl_methode">
+              <option value="">(none)</option>
+              <option>Direct induction</option><option>Breeding</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MONOSEX -->
+    <div id="cond-sec-monosex" class="cond">
+      <div class="card">
+        <div class="card-title">⚧ Monosex (genetic) – Details</div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="ms_sex">What is the sex of monosex?</label>
+            <select id="ms_sex">
+              <option value="">(none)</option>
+              <option>Female</option><option>Male</option>
+            </select>
+          </div>
+          <div class="col-6 form-group">
+            <label for="ms_methode">What method is used to produce this farmed type?</label>
+            <select id="ms_methode">
+              <option value="">(none)</option>
+              <option>Genetic manipulation of sex</option><option>Hybridisation</option>
+            </select>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="ms_nb_generations">Number of generations</label>
+            <input type="number" id="ms_nb_generations" min="0" step="1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="ms_historique_doc">Does it have a documented breeding history?</label>
+            <select id="ms_historique_doc" onchange="toggleCond('cond-ms-hist','ms_historique_doc','yes')">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-6 form-group">
+            <div id="cond-ms-hist" class="cond">
+              <label for="ms_ref_historique">Details</label>
+              <textarea id="ms_ref_historique" ></textarea>
+              <label for="ms_nb_gen_historique" style="margin-top:8px;">Number of generations</label>
+              <input type="number" id="ms_nb_gen_historique" min="0" step="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANSGENIC -->
+    <div id="cond-sec-transgenic" class="cond">
+      <div class="card">
+        <div class="card-title">🧬 Transgenic – Details</div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="tg_gene_name">Name and function of the gene introduced</label>
+            <input type="text" id="tg_gene_name" >
+          </div>
+          <div class="col-6 form-group">
+            <label for="tg_species_origin_gene">Species of origin of the introduced gene</label>
+            <input type="text" id="tg_species_origin_gene" >
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="tg_species_origin_promotor">Species of origin of the promotor</label>
+            <input type="text" id="tg_species_origin_promotor" >
+          </div>
+          <div class="col-6 form-group">
+            <label for="tg_ref_publication">Reference publication</label>
+            <textarea id="tg_ref_publication" ></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="tg_historique_doc">Does it have a documented breeding history?</label>
+            <select id="tg_historique_doc" onchange="toggleCond('cond-tg-hist','tg_historique_doc','yes')">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-6 form-group">
+            <div id="cond-tg-hist" class="cond">
+              <label for="tg_ref_historique">Details</label>
+              <textarea id="tg_ref_historique" ></textarea>
+              <label for="tg_nb_gen_historique" style="margin-top:8px;">Number of generations</label>
+              <input type="number" id="tg_nb_gen_historique" min="0" step="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENE EDITED -->
+    <div id="cond-sec-geneedited" class="cond">
+      <div class="card">
+        <div class="card-title">✂️ Gene Edited – Details</div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label>Which gene editing approach is used?</label>
+            <div class="check-group">
+              <label class="check-item"><input type="checkbox" name="ge_approach" value="Insertion"><span>Insertion</span></label>
+              <label class="check-item"><input type="checkbox" name="ge_approach" value="Deletion"><span>Deletion</span></label>
+              <label class="check-item"><input type="checkbox" name="ge_approach" value="Modification"><span>Modification</span></label>
+              <label class="check-item"><input type="checkbox" name="ge_approach" value="Replacement"><span>Replacement</span></label>
+            </div>
+          </div>
+          <div class="col-6 form-group">
+            <label for="ge_approach_details">Details on the approach</label>
+            <textarea id="ge_approach_details" ></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="ge_gene_technology">What is the gene technology used?</label>
+            <input type="text" id="ge_gene_technology" >
+          </div>
+          <div class="col-6 form-group">
+            <label for="ge_nb_target_genes">How many target genes have been edited?</label>
+            <input type="number" id="ge_nb_target_genes" min="1" step="1">
+          </div>
+        </div>
+        <hr class="subtle">
+        <div class="subsection">
+          <div class="subsection-title">Target genes edited – details</div>
+          <div class="row">
+            <div class="col-6 form-group">
+              <label for="ge_gene_name">Name of target gene</label>
+              <input type="text" id="ge_gene_name">
+            </div>
+            <div class="col-6 form-group">
+              <label for="ge_gene_function">Function of gene</label>
+              <input type="text" id="ge_gene_function" >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 form-group">
+              <label for="ge_ref_publication">Reference publication</label>
+              <textarea id="ge_ref_publication" ></textarea>
+            </div>
+            <div class="col-6 form-group">
+              <label for="ge_target_site">Target site</label>
+              <input type="text" id="ge_target_site" >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 form-group">
+              <label for="ge_chromosome_location">Location on the chromosome</label>
+              <input type="text" id="ge_chromosome_location" >
+            </div>
+            <div class="col-6 form-group">
+              <label for="ge_other_info">Other gene related information</label>
+              <textarea id="ge_other_info" ></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="ge_historique_doc">Does it have a documented breeding history?</label>
+            <select id="ge_historique_doc" onchange="toggleCond('cond-ge-hist','ge_historique_doc','yes')">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-6 form-group">
+            <div id="cond-ge-hist" class="cond">
+              <label for="ge_ref_historique">Details</label>
+              <textarea id="ge_ref_historique" ></textarea>
+              <label for="ge_nb_gen_historique" style="margin-top:8px;">Number of generations</label>
+              <input type="number" id="ge_nb_gen_historique" min="0" step="1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Common secondary fields -->
+    <div id="cond-sec-common" class="cond">
+      <div class="card">
+        <div class="card-title">🔍 Distinguishing Characteristics &amp; Export</div>
+        <div class="row">
+          <div class="col-6 form-group">
+            <label for="sec_has_heritable_char">Does it have distinguishing characteristics?</label>
+            <select id="sec_has_heritable_char" onchange="toggleCond('cond-sec-char','sec_has_heritable_char','yes')">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+        </div>
+        <div id="cond-sec-char" class="cond">
+          <div class="subsection">
+            <div class="subsection-title">Genetic characteristics</div>
+            <div class="check-group">
+              <label class="check-item"><input type="checkbox" name="sec_caract_genetiques" value="SNP panel"><span>SNP panel</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_caract_genetiques" value="mtDNA"><span>mtDNA</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_caract_genetiques" value="Microsatellites"><span>Microsatellites</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_caract_genetiques" value="Whole genome sequencing"><span>Whole genome sequencing</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_caract_genetiques" value="Not known"><span>Not known</span></label>
+            </div>
+          </div>
+          <div class="subsection">
+            <div class="subsection-title">Qualitative phenotype</div>
+            <div class="check-group">
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_qualitatif" value="Colour"><span>Colour</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_qualitatif" value="Scale pattern"><span>Scale pattern</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_qualitatif" value="Meristic characteristics"><span>Meristic characteristics</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_qualitatif" value="Other"><span>Other</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_qualitatif" value="Not known"><span>Not known</span></label>
+            </div>
+          </div>
+          <div class="subsection">
+            <div class="subsection-title">Quantitative performance characteristics</div>
+            <div class="check-group">
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_quantitatif" value="Production performance"><span>Production performance</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_quantitatif" value="Carcass composition"><span>Carcass composition</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_quantitatif" value="Flesh quality"><span>Flesh quality</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_quantitatif" value="Fitness"><span>Fitness</span></label>
+              <label class="check-item"><input type="checkbox" name="sec_phenotype_quantitatif" value="Not known"><span>Not known</span></label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sec_desc_char_distinctives">Describe distinguishing characteristics</label>
+            <textarea id="sec_desc_char_distinctives" ></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="sec_sources">Sources <span class="help-icon" title="Documentary references, publications, URLs">ⓘ</span></label>
+          <textarea id="sec_sources" ></textarea>
+        </div>
+        <hr class="subtle">
+        <div class="row">
+          <div class="col-4 form-group">
+            <label for="sec_export_type">Has this farmed type been exported for aquaculture use?</label>
+            <select id="sec_export_type" onchange="toggleCond('cond-sec-export','sec_export_type','yes')">
+              <option value="">(none)</option>
+              <option value="yes">Yes</option><option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-8 form-group">
+            <div id="cond-sec-export" class="cond">
+              <label for="sec_details_export">Details <span class="help-icon" title="Destination countries, volumes, dates">ⓘ</span></label>
+              <textarea id="sec_details_export" ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center; background:#f5f5f5;">
+      <button type="button" onclick="addSecondaryFarmType()" style="background:#00695c; color:white; border:none; border-radius:6px; padding:8px 18px; font-size:0.85rem; cursor:pointer;">➕ Add a secondary farm type</button>
+    </div>
+
+  </div><!-- /secondary-content -->
+</div><!-- /tab-secondary -->
+
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     TAB 3 – SUMMARY
+═══════════════════════════════════════════════════════════════════════ -->
+<div id="tab-summary" class="tab-pane">
+
+  <div id="summary-output"></div>
+
+  <div class="card" style="margin-top:24px;">
+    <div class="card-title">📧 Download and send your form</div>
+
+    <div class="steps-row" style="margin-bottom:18px;">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Export your data</div>
+        <div style="font-size:0.88rem; color:var(--grey-700); margin-bottom:10px;">
+          Download a formatted Excel file with all your data, ready to be sent.
+        </div>
+        <button class="btn btn-primary" onclick="exportExcel()">⬇ Download Excel (.xlsx)</button>
+      </div>
+    </div>
+
+    <hr class="subtle">
+
+    <div class="steps-row">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Send the file by email</div>
+        <div style="background:#f0f7ff; border:1px solid #b8d6f0; border-radius:8px; padding:12px 16px; font-size:0.9rem; color:#2c5f8a; margin-top:6px;">
+          📎 Attach the exported file to an email and send it to <strong>alexandra.pizzagalli@ifremer.fr</strong>
+          <br><br>
+          <span style="font-size:0.82rem; color:#666;">Suggested subject: <strong>AquaGRIS – Farm Type – [Species name] – [Date]</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /tab-summary -->
+
+</div><!-- /container -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ── LOCAL STORAGE KEY ─────────────────────────────────────────────────────────
+const LS_KEY = 'aquagris_farmtype_v1';
+
+// ── SECONDARY FARM TYPE INSTANCES ─────────────────────────────────────────────
+let secondarySuffixes = [''];     // '' = instance 1 (static), '_2', '_3', ... for added ones
+let secondaryCount = 1;
+let secondaryTemplateHTML = null; // captured once from the pristine instance 1 markup
+
+// ── COLLECT ALL FORM DATA ─────────────────────────────────────────────────────
+function collectAllData() {
+  const data = {};
+  // text inputs, selects, textareas
+  document.querySelectorAll('input[type="text"], input[type="email"], input[type="number"], select, textarea').forEach(el => {
+    if (el.id) data[el.id] = el.value;
+  });
+  // checkboxes
+  const cbNames = new Set();
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => cbNames.add(cb.name));
+  cbNames.forEach(name => {
+    data['__cb__' + name] = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(cb => cb.value);
+  });
+  data['__secondary_count__'] = secondaryCount;
+  return data;
+}
+
+// ── SAVE TO LOCALSTORAGE (disabled) ───────────────────────────────────────────
+// Auto-save désactivé volontairement : le formulaire ne persiste plus entre
+// deux ouvertures de la page. Utiliser le bouton "Save" pour exporter en JSON.
+function saveToLocalStorage() {
+  // no-op
+}
+
+// ── EXPORT JSON (save to file) ────────────────────────────────────────────────
+function exportJSON() {
+  const data = collectAllData();
+  const espece = (data['nom_espece'] || 'species').replace(/[^A-Za-z0-9]/g, '_').slice(0, 30);
+  const date   = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const blob   = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a      = document.createElement('a');
+  a.href       = URL.createObjectURL(blob);
+  a.download   = 'AquaGRIS_FarmType_' + espece + '_' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ── IMPORT JSON (load from file) ──────────────────────────────────────────────
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      ensureSecondaryInstances(data['__secondary_count__'] || 1);
+      // Restore into form
+      Object.keys(data).forEach(key => {
+        if (key.startsWith('__cb__')) {
+          const name = key.replace('__cb__', '');
+          const vals = data[key];
+          document.querySelectorAll('input[name="' + name + '"]').forEach(cb => {
+            cb.checked = vals.includes(cb.value);
+          });
+        } else {
+          const el = document.getElementById(key);
+          if (el) el.value = data[key];
+        }
+      });
+      // Re-trigger conditional displays
+      showPrimaryType();
+      toggleSecondaryAlert();
+      ['ws_stock_identifie','ws_export_type',
+       'cp_historique_doc','cp_ne_estimable','cp_registre_national','cp_export_type',
+       'st_historique_doc','st_ne_estimable','st_registre_national','st_has_heritable_char','st_export_type',
+       'va_historique_doc','va_ne_estimable','va_registre_national','va_has_heritable_char','va_export_type'
+      ].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const condMap = {
+          'ws_stock_identifie':   ['cond-ws-stock',  'yes'],
+          'ws_export_type':       ['cond-ws-export',  'yes'],
+          'cp_historique_doc':    ['cond-cp-hist',    'yes'],
+          'cp_ne_estimable':      ['cond-cp-ne',      'yes'],
+          'cp_registre_national': ['cond-cp-reg',     'yes'],
+          'cp_export_type':       ['cond-cp-export',  'yes'],
+          'st_historique_doc':    ['cond-st-hist',    'yes'],
+          'st_ne_estimable':      ['cond-st-ne',      'yes'],
+          'st_registre_national': ['cond-st-reg',     'yes'],
+          'st_has_heritable_char':['cond-st-char',    'yes'],
+          'st_export_type':       ['cond-st-export',  'yes'],
+          'va_historique_doc':    ['cond-va-hist',    'yes'],
+          'va_ne_estimable':      ['cond-va-ne',      'yes'],
+          'va_registre_national': ['cond-va-reg',     'yes'],
+          'va_has_heritable_char':['cond-va-char',    'yes'],
+          'va_export_type':       ['cond-va-export',  'yes'],
+        };
+        if (condMap[id]) toggleCond(condMap[id][0], id, condMap[id][1]);
+      });
+      secondarySuffixes.forEach(suffix => retriggerSecondaryConditionals(suffix));
+      // Save to localStorage too
+      // Save to localStorage too
+      saveToLocalStorage();
+      updateProgress();
+      // Show confirmation
+      ['import-confirm','import-error'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.style.display = 'none';
+      });
+      const ok = document.getElementById('import-confirm');
+      if (ok) { ok.style.display = 'block'; setTimeout(() => ok.style.display = 'none', 3000); }
+      const topOk = document.getElementById('topbar-confirm');
+      if (topOk) { topOk.style.display = 'inline'; setTimeout(() => topOk.style.display = 'none', 3000); }
+      // Reset file inputs so same file can be reloaded if needed
+      document.querySelectorAll('input[type="file"]').forEach(f => f.value = '');
+    } catch(err) {
+      const errEl = document.getElementById('import-error');
+      if (errEl) { errEl.style.display = 'block'; setTimeout(() => errEl.style.display = 'none', 4000); }
+    }
+  };
+  reader.readAsText(file);
+}
+
+
+// ── RESTORE FROM LOCALSTORAGE (disabled) ──────────────────────────────────────
+// Désactivé : plus aucune donnée n'est lue depuis localStorage au chargement.
+function restoreFromLocalStorage() {
+  // no-op : le formulaire démarre toujours vide.
+}
+
+// ── ATTACH SAVE LISTENERS ─────────────────────────────────────────────────────
+function attachListeners(root) {
+  root.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('change', saveToLocalStorage);
+    if (el.tagName === 'TEXTAREA' || el.type === 'text' || el.type === 'email' || el.type === 'number') {
+      el.addEventListener('input', saveToLocalStorage);
+    }
+  });
+}
+function attachSaveListeners() {
+  attachListeners(document);
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'summary') generateSummary();
+}
+
+// ── CONDITIONAL PANELS ───────────────────────────────────────────────────────
+function toggleCond(condId, inputId, showVal) {
+  const el = document.getElementById(condId);
+  const val = document.getElementById(inputId).value;
+  if (el) el.classList.toggle('show', val === showVal);
+  saveToLocalStorage();
+}
+
+function showPrimaryType() {
+  const tp = document.getElementById('type_primaire').value;
+  ['ws','cp','st','va'].forEach(code => {
+    document.getElementById('cond-' + code).classList.remove('show');
+  });
+  const map = {'Wild sourced':'ws','Captive propagated':'cp','Strain':'st','Variety':'va'};
+  if (map[tp]) document.getElementById('cond-' + map[tp]).classList.add('show');
+  saveToLocalStorage();
+}
+
+function toggleSecondaryAlert() {
+  const val = document.getElementById('has_secondary').value;
+  document.getElementById('secondary-alert').style.display = val === 'yes' ? 'block' : 'none';
+  document.getElementById('secondary-locked').style.display  = val === 'yes' ? 'none' : 'block';
+  document.getElementById('secondary-content').style.display = val === 'yes' ? 'block' : 'none';
+  saveToLocalStorage();
+}
+
+function showSecondaryType(suffix) {
+  suffix = suffix || '';
+  const secEl = document.getElementById('sec_type' + suffix);
+  if (!secEl) return;
+  const sec = secEl.value;
+  ['hybrid','crossbred','polyploid','monosex','transgenic','geneedited'].forEach(t => {
+    const el = document.getElementById('cond-sec-' + t + suffix);
+    if (el) el.classList.remove('show');
+  });
+  const map = {
+    'Hybrid':'hybrid','Crossbred':'crossbred','Polyploid':'polyploid',
+    'Monosex':'monosex','Transgenic':'transgenic','Gene edited':'geneedited'
+  };
+  if (map[sec]) {
+    const el = document.getElementById('cond-sec-' + map[sec] + suffix);
+    if (el) el.classList.add('show');
+  }
+  const commonEl = document.getElementById('cond-sec-common' + suffix);
+  if (commonEl) commonEl.classList.toggle('show', sec !== '');
+  saveToLocalStorage();
+}
+
+// ── MULTIPLE SECONDARY FARM TYPES ────────────────────────────────────────────
+function retriggerSecondaryConditionals(suffix) {
+  showSecondaryType(suffix);
+  const map = {
+    'sec_registre_national':  ['cond-sec-reg',    'yes'],
+    'sec_has_heritable_char': ['cond-sec-char',   'yes'],
+    'sec_export_type':        ['cond-sec-export', 'yes'],
+    'ms_historique_doc':      ['cond-ms-hist',    'yes'],
+    'tg_historique_doc':      ['cond-tg-hist',    'yes'],
+    'ge_historique_doc':      ['cond-ge-hist',    'yes'],
+  };
+  Object.keys(map).forEach(baseId => {
+    const id = baseId + suffix;
+    const el = document.getElementById(id);
+    if (!el) return;
+    toggleCond(map[baseId][0] + suffix, id, map[baseId][1]);
+  });
+}
+
+function buildSecondaryInstanceHTML(suffix) {
+  let html = secondaryTemplateHTML;
+  html = html.replace(/\bid="([a-zA-Z0-9_-]+)"/g, (m, id) => 'id="' + id + suffix + '"');
+  html = html.replace(/\bfor="([a-zA-Z0-9_-]+)"/g, (m, id) => 'for="' + id + suffix + '"');
+  html = html.replace(/\bname="([a-zA-Z0-9_-]+)"/g, (m, id) => 'name="' + id + suffix + '"');
+  html = html.replace(/onchange="showSecondaryType\(\)"/g, 'onchange="showSecondaryType(\'' + suffix + '\')"');
+  html = html.replace(/onchange="toggleCond\('([^']+)','([^']+)','([^']+)'\)"/g,
+    (m, a, b, c) => 'onchange="toggleCond(\'' + a + suffix + '\',\'' + b + suffix + '\',\'' + c + '\')"');
+  return html;
+}
+
+function addSecondaryFarmType(silent) {
+  if (!secondaryTemplateHTML) return;
+  secondaryCount++;
+  const n = secondaryCount;
+  const suffix = '_' + n;
+  secondarySuffixes.push(suffix);
+
+  const pane = document.createElement('div');
+  pane.id = 'tab-secondary' + suffix;
+  pane.className = 'tab-pane';
+  pane.innerHTML = buildSecondaryInstanceHTML(suffix);
+
+  const summaryPane = document.getElementById('tab-summary');
+  summaryPane.parentNode.insertBefore(pane, summaryPane);
+
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn';
+  btn.textContent = '🔬 Secondary Farm Type ' + n;
+  btn.onclick = function() { switchTab('secondary' + suffix, this); };
+  const summaryBtn = document.getElementById('tab-btn-summary');
+  summaryBtn.parentNode.insertBefore(btn, summaryBtn);
+
+  attachListeners(pane);
+  saveToLocalStorage();
+  if (!silent) switchTab('secondary' + suffix, btn);
+}
+
+function ensureSecondaryInstances(count) {
+  while (secondaryCount < count) {
+    addSecondaryFarmType(true);
+  }
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const fields = ['groupe_taxo','nom_espece','nom_type','type_primaire'];
+  const filled = fields.filter(f => {
+    const el = document.getElementById(f);
+    return el && el.value && el.value.trim() !== '';
+  });
+  const pct = Math.round(100 * filled.length / fields.length);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = 'Form completion: ' + pct + '%';
+}
+
+// ── SUMMARY HELPERS ───────────────────────────────────────────────────────────
+function gv(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.value ? el.value.trim() : '';
+}
+function gcb(name) {
+  return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'))
+              .map(cb => cb.value).join(' | ') || '—';
+}
+function fmtVal(v) {
+  return (v && v.trim()) ? v.trim() : '—';
+}
+
+function summaryRow(label, value) {
+  const display = (value && value !== '—') 
+    ? `<td>${value}</td>`
+    : `<td><span class="empty-val">—</span></td>`;
+  return `<tr><td><strong>${label}</strong></td>${display}</tr>`;
+}
+
+function summarySection(icon, title, rows) {
+  return `
+    <div class="summary-section-title">${icon} ${title}</div>
+    <table class="summary-table">${rows}</table>`;
+}
+
+function generateSummary() {
+  const tp  = gv('type_primaire');
+  let html  = '';
+
+  // ─ PRIMARY ─
+  html += `<div class="summary-header">🧬 Primary Farm Type – AquaGRIS</div>
+           <div class="summary-block">`;
+
+  html += summarySection('🌍','Person providing the information',
+    summaryRow('SURNAME Name', fmtVal(gv('contact'))) +
+    summaryRow('Email', fmtVal(gv('email'))));
+
+  html += summarySection('🔬','Reference species',
+    summaryRow('Taxonomic group', fmtVal(gv('groupe_taxo'))) +
+    summaryRow('Species name', fmtVal(gv('nom_espece'))));
+
+  html += summarySection('🏷️','Farm type identification',
+    summaryRow('Name of the farm type', fmtVal(gv('nom_type'))) +
+    summaryRow('Description', fmtVal(gv('desc_type'))) +
+    summaryRow('Reporting person', fmtVal(gv('nom_rapporteur'))) +
+    summaryRow('Primary farm type', fmtVal(tp)));
+
+  if (tp === 'Wild sourced') {
+    let rows = summaryRow('Life cycle stage collected', fmtVal(gv('ws_stade_vie'))) +
+               summaryRow('Where/when collected?', fmtVal(gv('ws_lieu_broodstock'))) +
+               summaryRow('Derived from known genetic stock?', fmtVal(gv('ws_stock_identifie')));
+    if (gv('ws_stock_identifie') === 'yes') rows += summaryRow('Stock reference', fmtVal(gv('ws_ref_stock')));
+    rows += summaryRow('Principal rationale', fmtVal(gv('ws_raison_commerciale'))) +
+            summaryRow('Estimated production (%)', fmtVal(gv('ws_pct_production'))) +
+            summaryRow('Sources', fmtVal(gv('ws_sources'))) +
+            summaryRow('Exported out of country?', fmtVal(gv('ws_export_type')));
+    if (gv('ws_export_type') === 'yes') rows += summaryRow('Export details', fmtVal(gv('ws_details_export')));
+    html += summarySection('🌊','Wild Sourced', rows);
+  } else if (tp === 'Captive propagated') {
+    let rows = summaryRow('Origin', fmtVal(gv('cp_origine'))) +
+               summaryRow('Origin details', fmtVal(gv('cp_origine_details'))) +
+               summaryRow('Native species of the country?', fmtVal(gv('cp_natif'))) +
+               summaryRow('Species composition', fmtVal(gv('cp_composition'))) +
+               summaryRow('Nb. generations in captivity', fmtVal(gv('cp_nb_generations'))) +
+               summaryRow('Selective breeding techniques', gcb('cp_methodes_amelio')) +
+               summaryRow('Documented breeding history?', fmtVal(gv('cp_historique_doc')));
+    if (gv('cp_historique_doc') === 'yes') rows += summaryRow('Reference details', fmtVal(gv('cp_ref_historique')));
+    if (gv('cp_natif') === 'no') rows += summaryRow('Risk assessment on the species / risk difference', fmtVal(gv('cp_risque_eval')));
+    rows += summaryRow('Can Ne be estimated?', fmtVal(gv('cp_ne_estimable')));
+    if (gv('cp_ne_estimable') === 'yes') rows += summaryRow('Effective population size (Ne)', fmtVal(gv('cp_ne_valeur')));
+    rows += summaryRow('Principal rationale', fmtVal(gv('cp_raison_commerciale'))) +
+            summaryRow('National registry?', fmtVal(gv('cp_registre_national')));
+    if (gv('cp_registre_national') === 'yes') rows += summaryRow('Registry details', fmtVal(gv('cp_registre_details')));
+    rows += summaryRow('Sources', fmtVal(gv('cp_sources'))) +
+            summaryRow('Estimated production (%)', fmtVal(gv('cp_pct_production'))) +
+            summaryRow('Conservation measures', gcb('cp_mesures_conservation')) +
+            summaryRow('Details on conservation', fmtVal(gv('cp_details_conservation'))) +
+            summaryRow('Exported out of country?', fmtVal(gv('cp_export_type')));
+    if (gv('cp_export_type') === 'yes') rows += summaryRow('Export details', fmtVal(gv('cp_details_export')));
+    html += summarySection('🐟','Captive Propagated', rows);
+  } else if (tp === 'Strain') {
+    let rows = summaryRow('Origin', fmtVal(gv('st_origine'))) +
+               summaryRow('Native species of the country?', fmtVal(gv('st_natif'))) +
+               summaryRow('Species composition', fmtVal(gv('st_composition'))) +
+               summaryRow('How has it become a strain?', fmtVal(gv('st_become'))) +
+               summaryRow('Nb. generations domesticated/selected', fmtVal(gv('st_nb_generations'))) +
+               summaryRow('Principal rationale', fmtVal(gv('st_raison_commerciale'))) +
+               summaryRow('Documented breeding history?', fmtVal(gv('st_historique_doc')));
+    if (gv('st_historique_doc') === 'yes') rows += summaryRow('Reference details', fmtVal(gv('st_ref_historique')));
+    if (gv('st_natif') === 'no') rows += summaryRow('Risk assessment on the species / risk difference', fmtVal(gv('st_risque_eval')));
+    rows += summaryRow('Can Ne be estimated?', fmtVal(gv('st_ne_estimable')));
+    if (gv('st_ne_estimable') === 'yes') rows += summaryRow('Effective population size (Ne)', fmtVal(gv('st_ne_valeur')));
+    rows += summaryRow('National registry?', fmtVal(gv('st_registre_national')));
+    if (gv('st_registre_national') === 'yes') rows += summaryRow('Accession code', fmtVal(gv('st_code_accession')));
+    rows += summaryRow('Registry details', fmtVal(gv('st_registre_details'))) +
+            summaryRow('Heritable characteristics?', fmtVal(gv('st_has_heritable_char')));
+    if (gv('st_has_heritable_char') === 'yes') {
+      rows += summaryRow('Genetic characteristics', gcb('st_caract_genetiques')) +
+              summaryRow('Qualitative phenotype', gcb('st_phenotype_qualitatif')) +
+              summaryRow('Quantitative performance', gcb('st_phenotype_quantitatif')) +
+              summaryRow('Description of distinguishing characteristics', fmtVal(gv('st_desc_char_distinctives')));
+    }
+    rows += summaryRow('Sources', fmtVal(gv('st_sources'))) +
+            summaryRow('Estimated production (%)', fmtVal(gv('st_pct_production'))) +
+            summaryRow('Production trend (last 10 years)', fmtVal(gv('st_tendance_production'))) +
+            summaryRow('Conservation measures', gcb('st_mesures_conservation')) +
+            summaryRow('Details on conservation', fmtVal(gv('st_details_conservation'))) +
+            summaryRow('Exported out of country?', fmtVal(gv('st_export_type')));
+    if (gv('st_export_type') === 'yes') rows += summaryRow('Export details', fmtVal(gv('st_details_export')));
+    html += summarySection('🧬','Strain', rows);
+  } else if (tp === 'Variety') {
+    let rows = summaryRow('Origin', fmtVal(gv('va_origine'))) +
+               summaryRow('Native species of the country?', fmtVal(gv('va_natif'))) +
+               summaryRow('Species composition', fmtVal(gv('va_composition'))) +
+               summaryRow('How has it become a variety?', fmtVal(gv('va_become'))) +
+               summaryRow('Nb. generations domesticated/selected', fmtVal(gv('va_nb_generations'))) +
+               summaryRow('Principal rationale', fmtVal(gv('va_raison_commerciale'))) +
+               summaryRow('Documented breeding history?', fmtVal(gv('va_historique_doc')));
+    if (gv('va_historique_doc') === 'yes') rows += summaryRow('Reference details', fmtVal(gv('va_ref_historique')));
+    if (gv('va_natif') === 'no') rows += summaryRow('Risk assessment on the species / risk difference', fmtVal(gv('va_risque_eval')));
+    rows += summaryRow('Can Ne be estimated?', fmtVal(gv('va_ne_estimable')));
+    if (gv('va_ne_estimable') === 'yes') rows += summaryRow('Effective population size (Ne)', fmtVal(gv('va_ne_valeur')));
+    rows += summaryRow('Information systems registered', gcb('va_systemes_info')) +
+            summaryRow('National registry?', fmtVal(gv('va_registre_national')));
+    if (gv('va_registre_national') === 'yes') rows += summaryRow('Registry details', fmtVal(gv('va_registre_details')));
+    rows += summaryRow('Heritable characteristics?', fmtVal(gv('va_has_heritable_char')));
+    if (gv('va_has_heritable_char') === 'yes') {
+      rows += summaryRow('Genetic characteristics', gcb('va_caract_genetiques')) +
+              summaryRow('Qualitative phenotype', gcb('va_phenotype_qualitatif')) +
+              summaryRow('Quantitative performance', gcb('va_phenotype_quantitatif')) +
+              summaryRow('Description of distinguishing characteristics', fmtVal(gv('va_desc_char_distinctives')));
+    }
+    rows += summaryRow('Sources', fmtVal(gv('va_sources'))) +
+            summaryRow('Estimated production (%)', fmtVal(gv('va_pct_production'))) +
+            summaryRow('Production trend (last 10 years)', fmtVal(gv('va_tendance_production'))) +
+            summaryRow('Conservation measures', gcb('va_mesures_conservation')) +
+            summaryRow('Details on conservation', fmtVal(gv('va_details_conservation'))) +
+            summaryRow('Exported out of country?', fmtVal(gv('va_export_type')));
+    if (gv('va_export_type') === 'yes') rows += summaryRow('Export details', fmtVal(gv('va_details_export')));
+    html += summarySection('🌱','Variety', rows);
+  }
+
+  html += summaryRow('Has a secondary farm type?', fmtVal(gv('has_secondary')));
+  html += '</div>';
+
+  // ─ SECONDARY (if applicable) ─
+  if (gv('has_secondary') === 'yes') {
+    secondarySuffixes.forEach((suffix, idx) => {
+      html += buildSecondarySummaryBlock(suffix, idx + 1);
+    });
+  }
+
+  document.getElementById('summary-output').innerHTML = html;
+}
+
+function buildSecondarySummaryBlock(suffix, n) {
+  const sec = gv('sec_type' + suffix);
+  if (!sec) return '';
+  let html = `<div class="summary-header secondary">🔬 Secondary Farm Type ${n} – AquaGRIS</div>
+             <div class="summary-block">`;
+
+  let idRows = summaryRow('Name of the farmed type', fmtVal(gv('sec_nom_type'+suffix))) +
+               summaryRow('Description', fmtVal(gv('sec_desc_type'+suffix))) +
+               summaryRow('Secondary farmed type', fmtVal(sec)) +
+               summaryRow('Origin', fmtVal(gv('sec_origine'+suffix))) +
+               summaryRow('National registration system?', fmtVal(gv('sec_registre_national'+suffix)));
+  if (gv('sec_registre_national'+suffix) === 'yes') idRows += summaryRow('Registry details', fmtVal(gv('sec_registre_details'+suffix)));
+  idRows += summaryRow('Principal rationale', fmtVal(gv('sec_rationale'+suffix)));
+  html += summarySection('🏷️','Identification', idRows);
+
+  if (sec === 'Hybrid') {
+    html += summarySection('🔀','Hybrid', summaryRow('Species with which hybridized', fmtVal(gv('hy_species_hybridized'+suffix))));
+  } else if (sec === 'Crossbred') {
+    html += summarySection('🔀','Crossbred', summaryRow('Farmed type used in crossing', fmtVal(gv('cb_farmed_type_crossed'+suffix))));
+  } else if (sec === 'Polyploid') {
+    html += summarySection('🧫','Polyploid',
+      summaryRow('Number of sets of chromosomes', fmtVal(gv('pl_nb_chromosomes'+suffix))) +
+      summaryRow('Production method', fmtVal(gv('pl_methode'+suffix))));
+  } else if (sec === 'Monosex') {
+    let msRows = summaryRow('Sex of monosex', fmtVal(gv('ms_sex'+suffix))) +
+      summaryRow('Production method', fmtVal(gv('ms_methode'+suffix))) +
+      summaryRow('Number of generations', fmtVal(gv('ms_nb_generations'+suffix))) +
+      summaryRow('Documented breeding history?', fmtVal(gv('ms_historique_doc'+suffix)));
+    if (gv('ms_historique_doc'+suffix) === 'yes') {
+      msRows += summaryRow('Breeding history details', fmtVal(gv('ms_ref_historique'+suffix))) +
+                summaryRow('Number of generations (history)', fmtVal(gv('ms_nb_gen_historique'+suffix)));
+    }
+    html += summarySection('⚧','Monosex (genetic)', msRows);
+  } else if (sec === 'Transgenic') {
+    let tgRows = summaryRow('Name and function of introduced gene', fmtVal(gv('tg_gene_name'+suffix))) +
+      summaryRow('Species of origin of the gene', fmtVal(gv('tg_species_origin_gene'+suffix))) +
+      summaryRow('Species of origin of the promotor', fmtVal(gv('tg_species_origin_promotor'+suffix))) +
+      summaryRow('Reference publication', fmtVal(gv('tg_ref_publication'+suffix))) +
+      summaryRow('Documented breeding history?', fmtVal(gv('tg_historique_doc'+suffix)));
+    if (gv('tg_historique_doc'+suffix) === 'yes') {
+      tgRows += summaryRow('Breeding history details', fmtVal(gv('tg_ref_historique'+suffix))) +
+                summaryRow('Number of generations (history)', fmtVal(gv('tg_nb_gen_historique'+suffix)));
+    }
+    html += summarySection('🧬','Transgenic', tgRows);
+  } else if (sec === 'Gene edited') {
+    let geRows = summaryRow('Gene editing approach', gcb('ge_approach'+suffix)) +
+      summaryRow('Details on approach', fmtVal(gv('ge_approach_details'+suffix))) +
+      summaryRow('Gene technology used', fmtVal(gv('ge_gene_technology'+suffix))) +
+      summaryRow('Number of target genes edited', fmtVal(gv('ge_nb_target_genes'+suffix))) +
+      summaryRow('Name of target gene', fmtVal(gv('ge_gene_name'+suffix))) +
+      summaryRow('Function of gene', fmtVal(gv('ge_gene_function'+suffix))) +
+      summaryRow('Reference publication', fmtVal(gv('ge_ref_publication'+suffix))) +
+      summaryRow('Target site', fmtVal(gv('ge_target_site'+suffix))) +
+      summaryRow('Location on the chromosome', fmtVal(gv('ge_chromosome_location'+suffix))) +
+      summaryRow('Other gene related information', fmtVal(gv('ge_other_info'+suffix))) +
+      summaryRow('Documented breeding history?', fmtVal(gv('ge_historique_doc'+suffix)));
+    if (gv('ge_historique_doc'+suffix) === 'yes') {
+      geRows += summaryRow('Breeding history details', fmtVal(gv('ge_ref_historique'+suffix))) +
+                summaryRow('Number of generations (history)', fmtVal(gv('ge_nb_gen_historique'+suffix)));
+    }
+    html += summarySection('✂️','Gene Edited', geRows);
+  }
+
+  let charRows = summaryRow('Distinguishing characteristics?', fmtVal(gv('sec_has_heritable_char'+suffix)));
+  if (gv('sec_has_heritable_char'+suffix) === 'yes') {
+    charRows += summaryRow('Genetic characteristics', gcb('sec_caract_genetiques'+suffix)) +
+                summaryRow('Qualitative phenotype', gcb('sec_phenotype_qualitatif'+suffix)) +
+                summaryRow('Quantitative performance', gcb('sec_phenotype_quantitatif'+suffix)) +
+                summaryRow('Description', fmtVal(gv('sec_desc_char_distinctives'+suffix)));
+  }
+  charRows += summaryRow('Sources', fmtVal(gv('sec_sources'+suffix))) +
+              summaryRow('Exported for aquaculture use?', fmtVal(gv('sec_export_type'+suffix)));
+  if (gv('sec_export_type'+suffix) === 'yes') charRows += summaryRow('Export details', fmtVal(gv('sec_details_export'+suffix)));
+  html += summarySection('🔍','Distinguishing Characteristics & Export', charRows);
+
+  html += '</div>';
+  return html;
+}
+
+
+// ── EXCEL EXPORT ──────────────────────────────────────────────────────────────
+function addSecondaryExcelRows(suffix, n, add, addCb) {
+  const sec = document.getElementById('sec_type'+suffix) ? document.getElementById('sec_type'+suffix).value.trim() : '';
+  if (!sec) return;
+  const gvs = (id) => {
+    const el = document.getElementById(id+suffix);
+    return el && el.value ? el.value.trim() : '';
+  };
+  const label = 'Secondary Farm Type ' + n + ' – Identification';
+  add(label, 'Name of the farmed type', gvs('sec_nom_type'));
+  add(null, 'Description', gvs('sec_desc_type'));
+  add(null, 'Secondary farmed type', sec);
+  add(null, 'Origin', gvs('sec_origine'));
+  add(null, 'National registration system?', gvs('sec_registre_national'));
+  if (gvs('sec_registre_national') === 'yes') add(null, 'Registry details', gvs('sec_registre_details'));
+  add(null, 'Principal rationale', gvs('sec_rationale'));
+
+  if (sec === 'Hybrid')    add('Hybrid', 'Species with which hybridized', gvs('hy_species_hybridized'));
+  if (sec === 'Crossbred') add('Crossbred', 'Farmed type used in crossing', gvs('cb_farmed_type_crossed'));
+  if (sec === 'Polyploid') {
+    add('Polyploid', 'Number of sets of chromosomes', gvs('pl_nb_chromosomes'));
+    add(null, 'Production method', gvs('pl_methode'));
+  }
+  if (sec === 'Monosex') {
+    add('Monosex', 'Sex of monosex', gvs('ms_sex'));
+    add(null, 'Production method', gvs('ms_methode'));
+    add(null, 'Number of generations', gvs('ms_nb_generations'));
+    add(null, 'Documented breeding history?', gvs('ms_historique_doc'));
+    if (gvs('ms_historique_doc') === 'yes') {
+      add(null, 'Breeding history details', gvs('ms_ref_historique'));
+      add(null, 'Number of generations (history)', gvs('ms_nb_gen_historique'));
+    }
+  }
+  if (sec === 'Transgenic') {
+    add('Transgenic', 'Name and function of introduced gene', gvs('tg_gene_name'));
+    add(null, 'Species of origin of the gene', gvs('tg_species_origin_gene'));
+    add(null, 'Species of origin of the promotor', gvs('tg_species_origin_promotor'));
+    add(null, 'Reference publication', gvs('tg_ref_publication'));
+    add(null, 'Documented breeding history?', gvs('tg_historique_doc'));
+    if (gvs('tg_historique_doc') === 'yes') {
+      add(null, 'Breeding history details', gvs('tg_ref_historique'));
+      add(null, 'Number of generations (history)', gvs('tg_nb_gen_historique'));
+    }
+  }
+  if (sec === 'Gene edited') {
+    addCb('Gene Edited', 'Gene editing approach', 'ge_approach'+suffix);
+    add(null, 'Details on approach', gvs('ge_approach_details'));
+    add(null, 'Gene technology used', gvs('ge_gene_technology'));
+    add(null, 'Number of target genes edited', gvs('ge_nb_target_genes'));
+    add(null, 'Name of target gene', gvs('ge_gene_name'));
+    add(null, 'Function of gene', gvs('ge_gene_function'));
+    add(null, 'Reference publication', gvs('ge_ref_publication'));
+    add(null, 'Target site', gvs('ge_target_site'));
+    add(null, 'Location on the chromosome', gvs('ge_chromosome_location'));
+    add(null, 'Other gene related information', gvs('ge_other_info'));
+    add(null, 'Documented breeding history?', gvs('ge_historique_doc'));
+    if (gvs('ge_historique_doc') === 'yes') {
+      add(null, 'Breeding history details', gvs('ge_ref_historique'));
+      add(null, 'Number of generations (history)', gvs('ge_nb_gen_historique'));
+    }
+  }
+
+  add('Secondary Farm Type ' + n + ' – Characteristics & Export', 'Distinguishing characteristics?', gvs('sec_has_heritable_char'));
+  if (gvs('sec_has_heritable_char') === 'yes') {
+    addCb(null, 'Genetic characteristics', 'sec_caract_genetiques'+suffix);
+    addCb(null, 'Qualitative phenotype', 'sec_phenotype_qualitatif'+suffix);
+    addCb(null, 'Quantitative performance', 'sec_phenotype_quantitatif'+suffix);
+    add(null, 'Description', gvs('sec_desc_char_distinctives'));
+  }
+  add(null, 'Sources', gvs('sec_sources'));
+  add(null, 'Exported for aquaculture use?', gvs('sec_export_type'));
+  if (gvs('sec_export_type') === 'yes') add(null, 'Export details', gvs('sec_details_export'));
+}
+
+function exportExcel() {
+  const tp  = gv('type_primaire');
+
+  const fmtV = (v) => {
+    if (!v || v === '' || v === '—') return '—';
+    return String(v);
+  };
+  const fmtCb = (name) => {
+    const vals = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(cb => cb.value);
+    return vals.length ? vals.join(' | ') : '—';
+  };
+
+  const lignes = [];
+  const add = (section, label, val) => lignes.push({ section, label, valeur: fmtV(val) });
+  const addCb = (section, label, name) => lignes.push({ section, label, valeur: fmtCb(name) });
+
+  add('Contact', 'SURNAME Name', gv('contact'));
+  add(null, 'Email', gv('email'));
+  add('Species', 'Taxonomic group', gv('groupe_taxo'));
+  add(null, 'Species name', gv('nom_espece'));
+  add('Farm Type Identification', 'Name of the farm type', gv('nom_type'));
+  add(null, 'Description', gv('desc_type'));
+  add(null, 'Reporting person', gv('nom_rapporteur'));
+  add(null, 'Primary farm type', tp);
+
+  if (tp === 'Wild sourced') {
+    add('Wild Sourced', 'Life cycle stage collected', gv('ws_stade_vie'));
+    add(null, 'Where/when collected?', gv('ws_lieu_broodstock'));
+    add(null, 'Derived from known genetic stock?', gv('ws_stock_identifie'));
+    if (gv('ws_stock_identifie') === 'yes') add(null, 'Stock reference', gv('ws_ref_stock'));
+    add(null, 'Principal rationale', gv('ws_raison_commerciale'));
+    add(null, 'Estimated production (% of species)', gv('ws_pct_production'));
+    add(null, 'Sources', gv('ws_sources'));
+    add(null, 'Exported out of country?', gv('ws_export_type'));
+    if (gv('ws_export_type') === 'yes') add(null, 'Export details', gv('ws_details_export'));
+  } else if (tp === 'Captive propagated') {
+    add('Captive Propagated', 'Origin', gv('cp_origine'));
+    add(null, 'Origin details', gv('cp_origine_details'));
+    add(null, 'Species composition', gv('cp_composition'));
+    add(null, 'Nb. generations in captivity', gv('cp_nb_generations'));
+    add(null, 'Native species of the country?', gv('cp_natif'));
+    if (gv('cp_natif') === 'no') add(null, 'Risk assessment on the species / risk difference', gv('cp_risque_eval'));
+    addCb(null, 'Selective breeding techniques', 'cp_methodes_amelio');
+    add(null, 'Documented breeding history?', gv('cp_historique_doc'));
+    if (gv('cp_historique_doc') === 'yes') add(null, 'Reference details', gv('cp_ref_historique'));
+    add(null, 'Can Ne be estimated?', gv('cp_ne_estimable'));
+    if (gv('cp_ne_estimable') === 'yes') add(null, 'Effective population size (Ne)', gv('cp_ne_valeur'));
+    add(null, 'Principal rationale', gv('cp_raison_commerciale'));
+    add(null, 'National registry?', gv('cp_registre_national'));
+    if (gv('cp_registre_national') === 'yes') add(null, 'Registry details', gv('cp_registre_details'));
+    add(null, 'Sources', gv('cp_sources'));
+    add(null, 'Estimated production (% of species)', gv('cp_pct_production'));
+    addCb(null, 'Conservation measures', 'cp_mesures_conservation');
+    add(null, 'Details on conservation', gv('cp_details_conservation'));
+    add(null, 'Exported out of country?', gv('cp_export_type'));
+    if (gv('cp_export_type') === 'yes') add(null, 'Export details', gv('cp_details_export'));
+  } else if (tp === 'Strain') {
+    add('Strain', 'Origin', gv('st_origine'));
+    add(null, 'Species composition', gv('st_composition'));
+    add(null, 'How has it become a strain?', gv('st_become'));
+    add(null, 'Nb. generations domesticated/selected', gv('st_nb_generations'));
+    add(null, 'Native species of the country?', gv('st_natif'));
+    if (gv('st_natif') === 'no') add(null, 'Risk assessment on the species / risk difference', gv('st_risque_eval'));
+    add(null, 'Principal rationale', gv('st_raison_commerciale'));
+    add(null, 'Documented breeding history?', gv('st_historique_doc'));
+    if (gv('st_historique_doc') === 'yes') add(null, 'Reference details', gv('st_ref_historique'));
+    add(null, 'Can Ne be estimated?', gv('st_ne_estimable'));
+    if (gv('st_ne_estimable') === 'yes') add(null, 'Effective population size (Ne)', gv('st_ne_valeur'));
+    add(null, 'National registry?', gv('st_registre_national'));
+    if (gv('st_registre_national') === 'yes') add(null, 'Accession code', gv('st_code_accession'));
+    add(null, 'Registry details', gv('st_registre_details'));
+    add(null, 'Heritable characteristics?', gv('st_has_heritable_char'));
+    if (gv('st_has_heritable_char') === 'yes') {
+      addCb(null, 'Genetic characteristics', 'st_caract_genetiques');
+      addCb(null, 'Qualitative phenotype', 'st_phenotype_qualitatif');
+      addCb(null, 'Quantitative performance', 'st_phenotype_quantitatif');
+      add(null, 'Description of distinguishing characteristics', gv('st_desc_char_distinctives'));
+    }
+    add(null, 'Sources', gv('st_sources'));
+    add(null, 'Estimated production (% of species)', gv('st_pct_production'));
+    add(null, 'Production trend (last 10 years)', gv('st_tendance_production'));
+    addCb(null, 'Conservation measures', 'st_mesures_conservation');
+    add(null, 'Details on conservation', gv('st_details_conservation'));
+    add(null, 'Exported out of country?', gv('st_export_type'));
+    if (gv('st_export_type') === 'yes') add(null, 'Export details', gv('st_details_export'));
+  } else if (tp === 'Variety') {
+    add('Variety', 'Origin', gv('va_origine'));
+    add(null, 'Species composition', gv('va_composition'));
+    add(null, 'How has it become a variety?', gv('va_become'));
+    add(null, 'Nb. generations domesticated/selected', gv('va_nb_generations'));
+    add(null, 'Native species of the country?', gv('va_natif'));
+    if (gv('va_natif') === 'no') add(null, 'Risk assessment on the species / risk difference', gv('va_risque_eval'));
+    add(null, 'Principal rationale', gv('va_raison_commerciale'));
+    add(null, 'Documented breeding history?', gv('va_historique_doc'));
+    if (gv('va_historique_doc') === 'yes') add(null, 'Reference details', gv('va_ref_historique'));
+    add(null, 'Can Ne be estimated?', gv('va_ne_estimable'));
+    if (gv('va_ne_estimable') === 'yes') add(null, 'Effective population size (Ne)', gv('va_ne_valeur'));
+    addCb(null, 'Information systems registered', 'va_systemes_info');
+    add(null, 'National registry?', gv('va_registre_national'));
+    if (gv('va_registre_national') === 'yes') add(null, 'Registry details', gv('va_registre_details'));
+    add(null, 'Heritable characteristics?', gv('va_has_heritable_char'));
+    if (gv('va_has_heritable_char') === 'yes') {
+      addCb(null, 'Genetic characteristics', 'va_caract_genetiques');
+      addCb(null, 'Qualitative phenotype', 'va_phenotype_qualitatif');
+      addCb(null, 'Quantitative performance', 'va_phenotype_quantitatif');
+      add(null, 'Description of distinguishing characteristics', gv('va_desc_char_distinctives'));
+    }
+    add(null, 'Sources', gv('va_sources'));
+    add(null, 'Estimated production (% of species)', gv('va_pct_production'));
+    add(null, 'Production trend (last 10 years)', gv('va_tendance_production'));
+    addCb(null, 'Conservation measures', 'va_mesures_conservation');
+    add(null, 'Details on conservation', gv('va_details_conservation'));
+    add(null, 'Exported out of country?', gv('va_export_type'));
+    if (gv('va_export_type') === 'yes') add(null, 'Export details', gv('va_details_export'));
+  }
+
+  add('Secondary Farm Type', 'Has a secondary farm type?', gv('has_secondary'));
+
+  if (gv('has_secondary') === 'yes') {
+    secondarySuffixes.forEach((suffix, idx) => {
+      addSecondaryExcelRows(suffix, idx + 1, add, addCb);
+    });
+  }
+
+  // ── Build worksheet ──
+  const wsData  = [];
+  const merges  = [];
+  const rowMeta = [];
+
+  wsData.push(['FARM TYPE – AquaGRIS', '']);
+  merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 1 } });
+  rowMeta.push('titre');
+
+  let currentSection = '';
+  lignes.forEach(lg => {
+    if (lg.section && lg.section !== currentSection) {
+      currentSection = lg.section;
+      wsData.push(['', '']);
+      rowMeta.push('spacer');
+      merges.push({ s: { r: wsData.length - 1, c: 0 }, e: { r: wsData.length - 1, c: 1 } });
+      wsData.push([currentSection, '']);
+      merges.push({ s: { r: wsData.length - 1, c: 0 }, e: { r: wsData.length - 1, c: 1 } });
+      rowMeta.push('section');
+    }
+    wsData.push([lg.label, lg.valeur]);
+    rowMeta.push(lg.valeur === '—' ? 'vide' : 'data');
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+  ws['!merges'] = merges;
+  ws['!cols'] = [{ wch: 52 }, { wch: 60 }];
+  ws['!rows'] = rowMeta.map(t => {
+    if (t === 'titre')   return { hpt: 22 };
+    if (t === 'section') return { hpt: 18 };
+    if (t === 'spacer')  return { hpt: 6 };
+    return { hpt: 15 };
+  });
+
+  const BLEU    = '1a6b8a';
+  const BLEU_BG = 'e8f4f8';
+  const GRIS    = 'f5f5f5';
+  const WHITE   = 'FFFFFF';
+
+  function styleCell(r, c, style) {
+    const addr = XLSX.utils.encode_cell({ r, c });
+    if (!ws[addr]) ws[addr] = { t: 's', v: '' };
+    ws[addr].s = style;
+  }
+
+  const sTitre   = { font: { name: 'Calibri', sz: 14, bold: true, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: BLEU } },    alignment: { horizontal: 'left', vertical: 'center' }, border: { bottom: { style: 'medium', color: { rgb: BLEU } } } };
+  const sSection = { font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: BLEU } },     fill: { fgColor: { rgb: BLEU_BG } }, alignment: { horizontal: 'left', vertical: 'center' }, border: { bottom: { style: 'thin',   color: { rgb: BLEU } } } };
+  const sLabel   = { font: { name: 'Calibri', sz: 10, bold: true, color: { rgb: '333333' } }, fill: { fgColor: { rgb: GRIS } },    alignment: { horizontal: 'left', vertical: 'top', wrapText: true } };
+  const sValeur  = { font: { name: 'Calibri', sz: 10,             color: { rgb: '111111' } }, fill: { fgColor: { rgb: WHITE } },   alignment: { horizontal: 'left', vertical: 'top', wrapText: true } };
+  const sVide    = { font: { name: 'Calibri', sz: 10, italic: true, color: { rgb: 'aaaaaa' } }, fill: { fgColor: { rgb: WHITE } }, alignment: { horizontal: 'left', vertical: 'top', wrapText: true } };
+  const sBlank   = { fill: { fgColor: { rgb: WHITE } } };
+
+  rowMeta.forEach((t, r) => {
+    if      (t === 'titre')   { styleCell(r, 0, sTitre);   styleCell(r, 1, sTitre); }
+    else if (t === 'section') { styleCell(r, 0, sSection); styleCell(r, 1, sSection); }
+    else if (t === 'spacer')  { styleCell(r, 0, sBlank);   styleCell(r, 1, sBlank); }
+    else                      { styleCell(r, 0, sLabel);   styleCell(r, 1, t === 'vide' ? sVide : sValeur); }
+  });
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Farm Type');
+
+  const espece = gv('nom_espece') ? gv('nom_espece').replace(/[^A-Za-z0-9]/g, '_').slice(0, 30) : 'species';
+  const date   = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  XLSX.writeFile(wb, 'AquaGRIS_FarmType_' + espece + '_' + date + '.xlsx');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  secondaryTemplateHTML = document.getElementById('secondary-content').innerHTML;
+  restoreFromLocalStorage();
+  attachSaveListeners();
+  updateProgress();
+});
+</script>
+</body>
+</html>
